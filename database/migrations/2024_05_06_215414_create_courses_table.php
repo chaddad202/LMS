@@ -14,17 +14,17 @@ return new class extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('company_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->string('title');
             $table->string('description');
             $table->string('photo');
             $table->integer('price');
             $table->time('course_duration')->nullable();
-            $table->date('last_upload_date')->nullable();
             $table->integer('number_of_student')->nullable();
             $table->float('rating')->nullable();
+            $table->float('number_of_rating')->nullable();
             $table->timestamps();
         });
     }

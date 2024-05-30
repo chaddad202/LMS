@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\course;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -22,7 +22,7 @@ class CourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|Integer|exists:users,id',
+            'category_id' => 'required|Integer|exists:categories,id',
             'title' => 'required|string',
             'description' => 'required|string',
             'photo' => 'file',

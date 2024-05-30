@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace app\Http\Controllers\Course;
 
-use App\Http\Requests\CourseRequest;
-use App\Http\Requests\CourseUpdateRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\course\CourseRequest;
+use App\Http\Requests\course\CourseUpdateRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Traits\GeneralTrait;
 use App\Models\Course;
-use App\Models\Course_category;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\course\CourseIndexResource;
+use App\Http\Resources\course\CourseShowResource;
 
 class CourseController extends Controller
 {
@@ -21,9 +23,7 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::all();
-        return response([
-            'data' => $courses
-        ], 200);
+        return CourseIndexResource::collection($courses);
     }
 
     /**
@@ -41,6 +41,8 @@ class CourseController extends Controller
     {
 
         $data = $request->all();
+        $user = auth()->user()->id;
+        $data['user_id'] = $user;
         $photo  = '';
         if ($request->hasFile('photo')) {
             $photo  = $request->file('photo')->store('public/images');
@@ -49,7 +51,7 @@ class CourseController extends Controller
         $course = Course::create($data);
         $key = 'Data';
 
-        return $this->returnData($key, $course, $msg = 'Successfully ');
+        return $this->returnSuccessMessage('created successfully');
     }
 
     /**
@@ -69,17 +71,10 @@ class CourseController extends Controller
         }
         return $this->returnData($key, $courses, $msg = 'Successfully ');
     }
-    public function show(Request $request)
+    public function show($id)
     {
-        $request->validate(["course_id" => "required|Integer|exists:courses,id"]);
-        $course = Course::find($request->course_id);
-        $teacher = $course->user;
-        $category = $course->categories;
-        return response([
-            'course_data' => $course,
-            'teacher' => $teacher,
-
-        ], 200);
+        $course = Course::find($id);
+        return new CourseShowResource($course);
     }
 
     /**
@@ -93,38 +88,38 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CourseUpdateRequest $request)
+    public function update(CourseUpdateRequest $request, $id)
     {
-        $teacher = User::find($request->user_id);
-        $course = Course::find($request->id);
-        $data = $request->all();
-        if ($request->hasFile('photo')) {
-            Storage::delete($course->photo);
-            $photo  = $request->file('photo')->store('public/images');
-            $data['photo'] = $photo;
+
+        $course = Course::findOrfail($id);
+        $user = auth()->user()->id;
+        if ($user == $course->user_id) {
+            $data = $request->all();
+            if ($request->hasFile('photo')) {
+                Storage::delete($course->photo);
+                $photo  = $request->file('photo')->store('public/images');
+                $data['photo'] = $photo;
+            }
+            $course->update($data);
+            $key = "data";
+            return $this->returnSuccessMessage($msg = ' updated Successfully ');
         }
-        $course->update($data);
-        $key = "data";
-
-
-
-        return $this->returnData($key, $course, $msg = 'Successfully ');
+        return $this->returnError(403, 'not have a permission');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $request->validate([
-            'id'  => 'required|Integer|exists:courses,id',
-            'user_id' => 'required|Integer|exists:users,id',
-        ]);
-        $course = Course::find($request->id);
-        $course->delete();
-        return response([
-            "DELETED SUCCESSFULLY"
-        ], 200);
+
+        $course = Course::find($id);
+        $user = auth()->user()->id;
+        if ($user == $course->user_id) {
+            $course->delete();
+            return $this->returnSuccessMessage($msg = ' deleted Successfully ');
+        }
+        return $this->returnError(403, 'not have a permission');
     }
     public function search(Request $request)
     {

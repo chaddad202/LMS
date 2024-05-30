@@ -11,6 +11,7 @@ class Course extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'category_id',
         'title',
         'description',
         'photo',
@@ -32,9 +33,9 @@ class Course extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function categories()
+    public function category()
     {
-        return $this->belongsToMany(Category::class, 'course_categories');
+        return $this->belongsTo(Category::class);
     }
 
     public function learning_paths()

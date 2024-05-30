@@ -20,11 +20,11 @@ trait GeneralTrait
     }
 
 
-    public function returnSuccessMessage($msg = "", $errNum = "S000")
+    public function returnSuccessMessage($msg = "")
     {
         return [
             'status' => true,
-            'errNum' => $errNum,
+            // 'errNum' => $errNum,
             'msg' => $msg
         ];
     }
@@ -227,6 +227,4 @@ trait GeneralTrait
         else
             return "";
     }
-
-
 }

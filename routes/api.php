@@ -7,7 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChoiceController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\CourseController;
+use app\Http\Controllers\Course\CourseController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\SectionController;
@@ -47,9 +47,9 @@ Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function ()
     Route::post('/profile_teacher', [teacher_profileController::class, 'store']);
     Route::post('/profile_teacher/update', [teacher_profileController::class, 'update']);
     Route::post('/profile_teacher/destroy', [teacher_profileController::class, 'destroy']);
-    Route::post('/course_store', [CourseController::class, 'store']);
-    Route::post('/course_update', [CourseController::class, 'update']);
-    Route::post('/course_destroy', [CourseController::class, 'destroy']);
+    Route::post('/course_store', [CourseController::class,'store']);
+    Route::post('/course_update/{id}', [CourseController::class, 'update']);
+    Route::get('/course_destroy/{id}', [CourseController::class, 'destroy']);
     Route::post('/category_store', [CategoryController::class, 'store']);
     Route::post('/category_update/{course_old_id}/{category_id_old}', [CategoryController::class, 'update']);
     Route::post('/category_destroy', [CategoryController::class, 'destroy']);
@@ -103,8 +103,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/category', [CategoryController::class, 'show']);
 Route::get('/course_index', [CourseController::class, 'index']);
-Route::post('/course_show', [CourseController::class, 'show']);
+Route::get('/course_show/{id}', [CourseController::class, 'show']);
 Route::post('/course_search', [CourseController::class, 'search']);
+
 Route::post('/teacher_courses', [CourseController::class, 'teacher_courses']);
 Route::post('/section_index', [SectionController::class, 'index']);
 Route::post('/section_show', [SectionController::class, 'show']);
