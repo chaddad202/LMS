@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Http\Controllers\Course;
+namespace App\Http\Controllers\Course;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\course\CourseRequest;
@@ -65,9 +65,7 @@ class CourseController extends Controller
         $key = 'data';
 
         if (!$courses) {
-            return response([
-                'message' => 'no course yet'
-            ], 200);
+            return $this->returnSuccessMessage('no courses yet');
         }
         return $this->returnData($key, $courses, $msg = 'Successfully ');
     }
@@ -104,7 +102,7 @@ class CourseController extends Controller
             $key = "data";
             return $this->returnSuccessMessage($msg = ' updated Successfully ');
         }
-        return $this->returnError(403, 'not have a permission');
+        return $this->returnError(401, 'Unauthenticated');
     }
 
     /**
@@ -119,7 +117,7 @@ class CourseController extends Controller
             $course->delete();
             return $this->returnSuccessMessage($msg = ' deleted Successfully ');
         }
-        return $this->returnError(403, 'not have a permission');
+        return $this->returnError(401, 'Unauthenticated');
     }
     public function search(Request $request)
     {

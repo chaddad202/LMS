@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\section;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LessonUpdateRequest extends FormRequest
+class SectionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,8 @@ class LessonUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'section_id' => 'required|Integer|exists:sections,id',
-            'media' => 'file',
-            'type_id' => 'required|Integer|exists:types,id',
-            'title' => 'string',
-            'description' => 'string',
+            'course_id' => 'required|Integer|exists:courses,id',
+            'title' => 'required|string',
         ];
     }
 }

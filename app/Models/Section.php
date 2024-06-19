@@ -13,7 +13,6 @@ class Section extends Model
         'user_id',
         'course_id',
         'title',
-        'description'
     ];
     public function quiz()
     {

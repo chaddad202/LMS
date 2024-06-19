@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use App\Http\Requests\LessonRequest;
-use App\Http\Requests\LessonUpdateRequest;
+namespace App\Http\Controllers\Course;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\lesson\LessonRequest;
+use App\Http\Requests\lesson\LessonUpdateRequest;
+use App\Http\Resources\lesson\LessonIndexResource;
+use App\Http\Resources\lesson\LessonShowResource;
 use App\Models\Comment;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
@@ -12,23 +14,22 @@ use App\Models\Type_of_lesson;
 use App\Models\Section;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Matcher\Not;
+use App\Traits\GeneralTrait;
 
 use function PHPUnit\Framework\isEmpty;
 
 class LessonController extends Controller
 {
+    use GeneralTrait;
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index($section_id)
     {
-        $request->validate(['section_id' => 'required|Integer|exists:sections,id']);
-        $section = Section::find($request->section_id);
-        return response([
-            'section' => $section->title,
-            'lesson' => $section->lessons,
 
-        ], 200);
+        $section = Section::find($section_id);
+        return new LessonIndexResource($section);
+
     }
 
     /**
@@ -52,7 +53,6 @@ class LessonController extends Controller
         if ($user_id == $authLesson) {
             $type = Type::find($request->type_id);
             $media  = $request->file('media')->store("public/$type->type");
-
             $lesson = Lesson::create([
                 'section_id' => $request->section_id,
                 'title' => $request->title,
@@ -64,44 +64,18 @@ class LessonController extends Controller
                 'lesson_id' => $lesson->id,
                 'type_id' => $type->id,
             ]);
-            return response([
-                'lesson' => $lesson,
-                '$type' => $type->type,
-            ], 200);
+            return $this->returnSuccessMessage('Created successfully');
         }
-        return response([
-            'YOU ARE NOT THE SAME TEACHER'
-        ], 403);
+        return $this->returnError(401, 'Unauthenticated');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function show($id)
     {
-        $response = [];
-        $request->validate(['lesson_id' => 'required|Integer|exists:lessons,id']);
-        $lesson = Lesson::find($request->lesson_id);
-        $comments = Comment::all()->where('lesson_id', $request->lesson_id);
-        foreach ($comments as $comment) {
-            if ($comment['comment_id'] == null) {
-                $response[] = [
-                    'lesson_id' => $comment->lesson_id,
-                    'comment_id' => $comment->comment_id,
-                    'comment' => $comment->comment,
-                    'reply' => $comment->comments->pluck('comment')
-                ];
-            }
-        }
-
-        //$reply = $comment->comments;
-
-        return response([
-            'lesson' => $lesson,
-            'comment ' => $response
-
-
-        ], 200);
+        $lesson = Lesson::find($id);
+         return new LessonShowResource($lesson);
     }
 
     /**
@@ -115,17 +89,16 @@ class LessonController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(LessonUpdateRequest $request)
+    public function update(LessonUpdateRequest $request, $id)
     {
-        $section = Section::find($request->section_id);
+        $lesson = Lesson::find($id);
+        $section = $lesson->section;
         $course = $section->course;
         $user = $course->user;
         $user_id = $user->id;
         $authLesson = auth()->user()->id;
         if ($user_id == $authLesson) {
-            $lesson = Lesson::find($request->lesson_id);
             $media = $lesson->media;
-
 
             if ($request->has('title') || $request->has('description')) {
                 $data = $request;
@@ -134,43 +107,33 @@ class LessonController extends Controller
 
             if ($request->has('media')) {
                 Storage::delete($lesson->media);
-                $lesson->update(['media' => $media]);
                 $type = Type::find($request->type_id);
                 $media  = $request->file('media')->store("public/$type->type");
                 $lesson->update([$media]);
             }
 
-            return response([
-                'message' => 'updated successfuly'
-            ], 200);
+            return $this->returnSuccessMessage('updated successfully');
         }
-        return response([
-            'YOU ARE NOT THE SAME TEACHER'
-        ], 403);
+        return $this->returnError(401, 'Unauthenticated');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $request->validate(['lesson_id' => 'required|Integer|exists:lessons,id']);
-        $section = Section::find($request->section_id);
+        $lesson = Lesson::find($id);
+        $section = $lesson->section;
         $course = $section->course;
         $user = $course->user;
         $user_id = $user->id;
         $authLesson = auth()->user()->id;
         if ($user_id == $authLesson) {
-            $lesson = Lesson::find($request->lesson_id);
             $media = $lesson->media;
             Storage::delete($media);
             $lesson->delete();
-            return response([
-                'message' => 'deleted successfuly'
-            ], 200);
+            return $this->returnSuccessMessage('destoryed successfully');
         }
-        return response([
-            'YOU ARE NOT THE SAME TEACHER'
-        ], 403);
+        return $this->returnError(401, 'Unauthenticated');
     }
 }

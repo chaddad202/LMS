@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\section;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -23,10 +23,7 @@ class SectionUpdateRequest extends FormRequest
     {
         return [
 
-            'section_id' => 'required|Integer|exists:sections,id',
-            'course_id' => 'required|Integer|exists:courses,id',
-            'title' => 'string',
-            'description' => 'string',
+            'title' => 'required|string',
         ];
     }
 }
