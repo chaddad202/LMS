@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
-
-use App\Http\Requests\EnrollmentRequest;
-use App\Http\Resources\EnrolmentIndexResource;
+namespace App\Http\Controllers\Course;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\enrollment\EnrollmentRequest;
+use App\Http\Resources\enrollment\EnrollmentIndexResource;
+use App\Http\Resources\enrollment\EnrollmentShowIndex;
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use App\Models\Course;
@@ -21,7 +22,7 @@ class EnrollmentController extends Controller
         $user2 = auth()->user()->id;
         $user = User::find($user2);
         $enrollment = Enrollment::where('user_id', $user2)->get();
-        return EnrolmentIndexResource::collection($enrollment);
+        return EnrollmentIndexResource::collection($enrollment);
     }
 
     /**
@@ -57,10 +58,9 @@ class EnrollmentController extends Controller
      */
     public function show($course_id)
     {
-        $enrollment = Enrollment::where($course_id)->get();
+        $enrollment = Enrollment::where('course_id', $course_id)->get();
 
-
-       
+        return  EnrollmentShowIndex::collection($enrollment);
     }
 
 
