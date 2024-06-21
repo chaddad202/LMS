@@ -40,7 +40,13 @@ class CourseController extends Controller
     public function store(CourseRequest $request)
     {
 
-        $data = $request->all();
+        $data = [
+            'category_id' => $request->category_id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'photo' => $request->photo,
+            'price'  => $request->price,
+        ];
         $user = auth()->user()->id;
         $data['user_id'] = $user;
         $photo  = '';
@@ -49,7 +55,10 @@ class CourseController extends Controller
         }
         $data['photo'] = $photo;
         $course = Course::create($data);
-        $key = 'Data';
+        foreach ($request->skills as $skill) {
+            $course->skills()->attach($skill['id'], ['point' => $skill['point']]);
+        }
+
 
         return $this->returnSuccessMessage('created successfully');
     }

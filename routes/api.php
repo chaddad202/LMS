@@ -16,7 +16,7 @@ use App\Http\Controllers\student_profileController;
 use App\Http\Controllers\Course\LessonController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizController;
-use App\Http\Controllers\SkillsController;
+use App\Http\Controllers\Course\SkillsController;
 use App\Models\teacher_profile;
 
 /*
@@ -68,9 +68,6 @@ Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function ()
     Route::post('/lesson_store', [LessonController::class, 'store']);
     Route::post('/lesson_update/{id}', [LessonController::class, 'update']);
     Route::get('/lesson_destroy/{id}', [LessonController::class, 'destroy']);
-    Route::post('/skill_store', [SkillsController::class, 'store']);
-    Route::post('/skill_update', [SkillsController::class, 'update']);
-    Route::post('/skill_destroy', [SkillsController::class, 'destroy']);
 });
 Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function () {
     Route::post('/profile_student', [student_profileController::class, 'store']);
@@ -88,6 +85,11 @@ Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function ()
     Route::post('/my_mark_show', [AnswerController::class, 'my_mark']);
 });
 Route::group(['middleware' => ['checkAdminRole', 'auth:sanctum']], function () {
+    Route::post('/skill_store', [SkillsController::class, 'store']);
+    Route::post('/skill_update/{id}', [SkillsController::class, 'update']);
+    Route::post('/skill_destroy/{id}', [SkillsController::class, 'destroy']);
+    Route::post('/skill_index', [SkillsController::class, 'index']);
+    Route::post('/skill_show/{id}', [SkillsController::class, 'show']);
 });
 
 
@@ -111,4 +113,3 @@ Route::get('/section_show/{id}', [SectionController::class, 'show']);
 Route::get('/lesson_index/{section_id}', [LessonController::class, 'index']);
 Route::get('/lesson_show/{id}', [LessonController::class, 'show']);
 Route::post('/enrollment_show/{course_id}', [EnrollmentController::class, 'show']);
-Route::post('/skill_show', [SkillsController::class, 'show']);

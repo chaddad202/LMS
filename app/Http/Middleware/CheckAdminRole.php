@@ -15,7 +15,7 @@ class CheckAdminRole
 
         $user2 = auth()->user()->id;
         $user = User::find($user2);
-        if ($user && $user->hasRole('admin') && $user2 == $request->user_id) {
+        if ($user && $user->hasRole('admin')) {
             return $next($request);
         }
 

@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             TypeSeeder::class,
             SkillSeeder::class,
+            UserSeeder::class,
+            adminroleSeeder::class
         ]);
         $adminRole = Role::create(['name' => 'admin']);
         $studentRole = Role::create(['name' => 'student']);

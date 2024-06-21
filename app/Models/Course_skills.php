@@ -10,7 +10,8 @@ class Course_skills extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'skill_id',
-        'course_id'
+        'skills_id',
+        'course_id',
+        'point '
     ];
 }

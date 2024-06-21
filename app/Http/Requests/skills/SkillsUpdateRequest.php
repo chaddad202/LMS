@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\course;
+namespace App\Http\Requests\Skills;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CourseRequest extends FormRequest
+class SkillsUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,15 +22,8 @@ class CourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'required|Integer|exists:categories,id',
-            'skills' => 'required|array',
-            'skills.*' => 'exists:skills,id',
-            'skills.*.point' => 'required|integer',
-            'title' => 'required|string',
-            'description' => 'required|string',
-            'photo' => 'file',
-            'price'  => 'required|Integer',
-
+            'title' => 'string',
+            'maximunPoint' => 'Integer',
         ];
     }
 }
