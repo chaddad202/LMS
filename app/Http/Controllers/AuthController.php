@@ -16,48 +16,48 @@ class AuthController extends Controller
 {
     use GeneralTrait;
 
-    public function register_Admin(UserRequest $request)
+    // public function register_Admin(UserRequest $request)
+    // {
+
+    //     $data = $request->all();
+
+    //     $data['password'] = Hash::make($request->password);
+    //     $user = User::create($data);
+
+    //     //$role = Role::findByName('admin');
+    //     $user->assignRole('admin');
+    //     $roles = $user->getRoleNames();
+    //     //$role = role_user::find($user->id)
+    //     $token = $user->createToken('myapptoken')->plainTextToken;
+    //     $key = 'Data';
+    //     $user->token = $token;
+    //     $response = [
+    //         'Admin' => $user,
+    //         'role' => $roles,
+    //         'token' => $token
+    //     ];
+    //     return $this->returnData($key, $response, $msg = 'Successful registration');
+    // }
+
+    public function register_Teacher(Request $request)
     {
+        $user = User::find(auth()->user()->id);
+        // $data = $request->all();
 
-        $data = $request->all();
-
-        $data['password'] = Hash::make($request->password);
-        $user = User::create($data);
-
-        //$role = Role::findByName('admin');
-        $user->assignRole('admin');
-        $roles = $user->getRoleNames();
-        //$role = role_user::find($user->id)
-        $token = $user->createToken('myapptoken')->plainTextToken;
-        $key = 'Data';
-        $user->token = $token;
-        $response = [
-            'Admin' => $user,
-            'role' => $roles,
-            'token' => $token
-        ];
-        return $this->returnData($key, $response, $msg = 'Successful registration');
-    }
-
-    public function register_Teacher(UserRequest $request)
-    {
-
-        $data = $request->all();
-
-        $data['password'] = Hash::make($request->password);
-        $user = User::create($data);
+        // $data['password'] = Hash::make($request->password);
+        // $user = User::create($data);
 
 
         $user->assignRole('teacher');
-        $roles = $user->getRoleNames();
+         $roles = $user->getRoleNames();
 
-        $token = $user->createToken('myapptoken')->plainTextToken;
-        $key = 'Data';
-        $user->token = $token;
+        // $token = $user->createToken('myapptoken')->plainTextToken;
+         $key = 'Data';
+        // $user->token = $token;
         $response = [
             'teacher' => $user,
             'role' => $roles,
-            'token' => $token
+            //'token' => $token
         ];
         return $this->returnData($key, $response, $msg = 'Successful registration');
     }

@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Course;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\enrollment\EnrollmentRequest;
+use App\Http\Resources\enrollment\EnrollmentIndexAResource;
 use App\Http\Resources\enrollment\EnrollmentIndexResource;
+use App\Http\Resources\enrollment\EnrollmentIndexSResource;
+use App\Http\Resources\enrollment\EnrollmentIndexTResource;
 use App\Http\Resources\enrollment\EnrollmentShowIndex;
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
@@ -19,10 +23,23 @@ class EnrollmentController extends Controller
      */
     public function index()
     {
-        $user2 = auth()->user()->id;
-        $user = User::find($user2);
-        $enrollment = Enrollment::where('user_id', $user2)->get();
-        return EnrollmentIndexResource::collection($enrollment);
+        // $user = User::find(auth()->user()->id);
+        // if ($user->hasRole('teacher')) {
+        //     $course =Course::where('user_id', $user->id)->get();
+        //         $enrollment = Enrollment::where('course_id', $course->pluck('id'))->get();
+        //     return EnrollmentIndexTResource::collection($enrollment);
+        // } else if ($user->hasRole('student')) {
+        //     $enrollment = Enrollment::where('user_id', $user)->get();
+        //     return EnrollmentIndexSResource::collection($enrollment);
+        // } else if ($user->hasRole('admin')) {
+        //     $enrollment = Enrollment::all();
+        //     return EnrollmentIndexAResource::collection($enrollment);
+        // }
+        $enrollment = Enrollment::all();
+        //return response()->json([$enrollment]);
+        return response([
+            'enrollment' => $enrollment
+        ], 200);
     }
 
     /**
@@ -38,18 +55,21 @@ class EnrollmentController extends Controller
      */
     public function store(EnrollmentRequest $request, $course_id)
     {
-        $data = $request->all();
+
         $user = auth()->user()->id;
         $course = Course::findOrFail($course_id);
         $enrollment = Enrollment::where('user_id', $user)->where('course_id', $course->id)->first();
         if (!$enrollment) {
-            Enrollment::create([
-                'user_id' => $user,
-                'course_id' => $course->id,
-                'totalPayment' => $request->totalPayment,
-                'progress' => $request->progress
-            ]);
-            return $this->returnSuccessMessage('created successfully');
+            if ($request->totalPayment == $course->price) {
+                Enrollment::create([
+                    'user_id' => $user,
+                    'course_id' => $course->id,
+                    'totalPayment' => $request->totalPayment,
+                    'progress' => $request->progress
+                ]);
+                return $this->returnSuccessMessage('created successfully');
+            }
+            return $this->returnError(304, "you should pay $course->price");
         }
         return $this->returnError(304, 'you are already enrollment');
     }
@@ -62,6 +82,8 @@ class EnrollmentController extends Controller
 
         return  EnrollmentShowIndex::collection($enrollment);
     }
+
+
 
 
 

@@ -16,7 +16,7 @@ class SkillsIndexResource extends JsonResource
     {
         return [
             'title' => $this->title,
-            'maximunPoint' => $this->maximunPoints,
+            'maximunPoint' => $this->maximunPoint,
 
         ];
     }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\enrollment;
+namespace App\Http\Resources\category;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class EnrollmentIndexResource extends JsonResource
+class CategoryIndexResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,8 +15,7 @@ class EnrollmentIndexResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'enrollment_date' => $this->pluck('created_at'),
-            'progress' => $this->pluck('progress'),
+            'name' => $this->name,
 
         ];
     }

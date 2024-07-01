@@ -4,7 +4,7 @@ use App\Http\Controllers\AnswerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Course\CategoryController;
 use App\Http\Controllers\ChoiceController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Course\CourseController;
@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post('/register_Admin', [AuthController::class, 'register_Admin']);
-Route::post('/register_Teacher', [AuthController::class, 'register_Teacher']);
+
 Route::post('/register_Student', [AuthController::class, 'register_Student']);
 // Route::middleware('role:teacher')->get('/users', function () {
 //     // ...
@@ -45,19 +45,16 @@ Route::post('/register_Student', [AuthController::class, 'register_Student']);
 
 Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function () {
     Route::post('/profile_teacher', [teacher_profileController::class, 'store']);
-    Route::post('/profile_teacher/update', [teacher_profileController::class, 'update']);
+    Route::put('/profile_teacher/update', [teacher_profileController::class, 'update']);
     Route::post('/profile_teacher/destroy', [teacher_profileController::class, 'destroy']);
     Route::post('/course_store', [CourseController::class, 'store']);
-    Route::post('/course_update/{id}', [CourseController::class, 'update']);
-    Route::get('/course_destroy/{id}', [CourseController::class, 'destroy']);
-    Route::post('/category_store', [CategoryController::class, 'store']);
-    Route::post('/category_update/{course_old_id}/{category_id_old}', [CategoryController::class, 'update']);
-    Route::post('/category_destroy', [CategoryController::class, 'destroy']);
+    Route::put('/course_update/{id}', [CourseController::class, 'update']);
+    Route::delete('/course_destroy/{id}', [CourseController::class, 'destroy']);
     Route::post('/section_store/{course_id}', [SectionController::class, 'store']);
-    Route::post('/section_update/{id}', [SectionController::class, 'update']);
+    Route::put('/section_update/{id}', [SectionController::class, 'update']);
     Route::get('/section_destroy/{id}', [SectionController::class, 'destroy']);
     Route::post('/quiz_store', [QuizController::class, 'store']);
-    Route::post('/quiz_update', [QuizController::class, 'update']);
+    Route::put('/quiz_update', [QuizController::class, 'update']);
     Route::post('/quiz_destroy', [QuizController::class, 'destroy']);
     Route::post('/question_store', [QuestionController::class, 'store']);
     Route::post('/question_update', [QuestionController::class, 'update']);
@@ -72,11 +69,10 @@ Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function ()
 Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function () {
     Route::post('/profile_student', [student_profileController::class, 'store']);
     Route::post('/profile_student/show', [student_profileController::class, 'show']);
-    Route::post('/profile_student/update', [student_profileController::class, 'update']);
+    Route::put('/profile_student/update', [student_profileController::class, 'update']);
     Route::post('/profile_student/destroy', [student_profileController::class, 'destroy']);
     Route::post('/teacher_search', [teacher_profileController::class, 'search']);
     Route::post('/enrollment_store/{course_id}', [EnrollmentController::class, 'store']);
-    Route::get('/enrollment_index', [EnrollmentController::class, 'index']);
     Route::post('/favorite_store', [FavoriteController::class, 'store']);
     Route::get('/favorite_index', [FavoriteController::class, 'index']);
     Route::post('/favorite_destroy', [FavoriteController::class, 'destroy']);
@@ -86,24 +82,28 @@ Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function ()
 });
 Route::group(['middleware' => ['checkAdminRole', 'auth:sanctum']], function () {
     Route::post('/skill_store', [SkillsController::class, 'store']);
-    Route::post('/skill_update/{id}', [SkillsController::class, 'update']);
-    Route::post('/skill_destroy/{id}', [SkillsController::class, 'destroy']);
-    Route::post('/skill_index', [SkillsController::class, 'index']);
-    Route::post('/skill_show/{id}', [SkillsController::class, 'show']);
+    Route::put('/skill_update/{id}', [SkillsController::class, 'update']);
+    Route::delete('/skill_destroy/{id}', [SkillsController::class, 'destroy']);
+    Route::post('/category_store', [CategoryController::class, 'store']);
+    Route::put('/category_update/{id}', [CategoryController::class, 'update']);
+    Route::delete('/category_destroy/{id}', [CategoryController::class, 'destroy']);
 });
 
 
-Route::post('/profile_teacher_show', [teacher_profileController::class, 'show']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/register_Teacher', [AuthController::class, 'register_Teacher']);  
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/comment_store', [CommentController::class, 'store']);
     Route::post('/comment_update', [CommentController::class, 'update']);
     Route::post('/comment_destroy', [CommentController::class, 'destroy']);
     Route::post('/comment_reply', [CommentController::class, 'reply']);
+    Route::get('/enrollment_index', [EnrollmentController::class, 'index']);
 });
 
+Route::post('/profile_teacher_show', [teacher_profileController::class, 'show']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/category', [CategoryController::class, 'show']);
+Route::post('/category_show/{id}', [CategoryController::class, 'show']);
+Route::get('/category_index', [CategoryController::class, 'index']);
 Route::get('/course_index', [CourseController::class, 'index']);
 Route::get('/course_show/{id}', [CourseController::class, 'show']);
 Route::post('/course_search', [CourseController::class, 'search']);
@@ -113,3 +113,5 @@ Route::get('/section_show/{id}', [SectionController::class, 'show']);
 Route::get('/lesson_index/{section_id}', [LessonController::class, 'index']);
 Route::get('/lesson_show/{id}', [LessonController::class, 'show']);
 Route::post('/enrollment_show/{course_id}', [EnrollmentController::class, 'show']);
+Route::get('/skill_show/{id}', [SkillsController::class, 'show']);
+Route::get('/skill_index', [SkillsController::class, 'index']);

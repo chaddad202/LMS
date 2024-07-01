@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\course;
+namespace App\Http\Requests\category;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CourseUpdateRequest extends FormRequest
+class CategoryUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,8 @@ class CourseUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'Integer|exists:categories,id',
-            'title' => 'string',
-            'description' => 'string',
-            'photo' => 'file',
-            'price'  => 'Integer',
-            'level' =>'string'
+            'name' => 'required|string'
+
         ];
     }
 }

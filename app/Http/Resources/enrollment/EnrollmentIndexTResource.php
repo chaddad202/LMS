@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Skills;
+namespace App\Http\Resources\enrollment;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SkillsShowResource extends JsonResource
+class EnrollmentIndexTResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +15,8 @@ class SkillsShowResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'title' => $this->title,
-            'maximunPoint' => $this->maximunPoint,
-
+             'student' => $this->user_id
         ];
     }
+
 }

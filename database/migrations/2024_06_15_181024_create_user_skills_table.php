@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('user_skills', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('skill_id');
+            $table->unsignedBigInteger('skills_id');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('skill_id')->references('id')->on('skills')->onDelete('cascade');
+            $table->foreign('skills_id')->references('id')->on('skills')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('point')->nullable();
             $table->timestamps();

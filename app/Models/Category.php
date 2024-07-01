@@ -9,10 +9,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Category extends Model
 {
     use HasFactory;
-
+    protected $fillable = [
+        'name'
+    ];
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
     public function courses()
     {
 
-        return $this->hasMany(Course::class);
+        return $this->belongsToMany(Course::class, 'course_categories');
     }
 }

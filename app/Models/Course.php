@@ -15,7 +15,13 @@ class Course extends Model
         'title',
         'description',
         'photo',
-        'price'
+        'level',
+        'price',
+        'course_duration',
+        'number_of_student',
+        'rating',
+        'number_of_rating',
+
     ];
 
     public function user()
@@ -33,9 +39,9 @@ class Course extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'course_categories');
     }
 
     public function learning_paths()

@@ -13,6 +13,7 @@ use App\Models\Course;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\course\CourseIndexResource;
 use App\Http\Resources\course\CourseShowResource;
+use App\Models\Skills;
 
 class CourseController extends Controller
 {
@@ -41,11 +42,11 @@ class CourseController extends Controller
     {
 
         $data = [
-            'category_id' => $request->category_id,
             'title' => $request->title,
             'description' => $request->description,
             'photo' => $request->photo,
             'price'  => $request->price,
+            'level' => $request->level
         ];
         $user = auth()->user()->id;
         $data['user_id'] = $user;
@@ -55,7 +56,14 @@ class CourseController extends Controller
         }
         $data['photo'] = $photo;
         $course = Course::create($data);
+        foreach ($request->category as $categories) {
+            $course->category()->attach($categories['id']);
+        }
         foreach ($request->skills as $skill) {
+            $s = Skills::where('id', $skill['id'])->first();
+            if ($skill['point'] > $s->maximunPoint) {
+                return $this->returnError(304, " the maximun is = $s->maximunPoint");
+            }
             $course->skills()->attach($skill['id'], ['point' => $skill['point']]);
         }
 
@@ -119,7 +127,6 @@ class CourseController extends Controller
      */
     public function destroy($id)
     {
-
         $course = Course::find($id);
         $user = auth()->user()->id;
         if ($user == $course->user_id) {

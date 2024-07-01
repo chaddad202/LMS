@@ -3,6 +3,7 @@
 namespace App\Http\Requests\course;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Monolog\Level;
 
 class CourseRequest extends FormRequest
 {
@@ -22,14 +23,18 @@ class CourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'required|Integer|exists:categories,id',
+
+            'category'  => 'required|array',
+            'category.*.id' => 'exists:categories,id',
             'skills' => 'required|array',
-            'skills.*' => 'exists:skills,id',
+            'skills.*.id' => 'exists:skills,id',
             'skills.*.point' => 'required|integer',
             'title' => 'required|string',
             'description' => 'required|string',
             'photo' => 'file',
             'price'  => 'required|Integer',
+            'level' => 'required|in:beginner,medium,master'
+
 
         ];
     }

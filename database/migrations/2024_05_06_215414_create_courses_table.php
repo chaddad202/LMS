@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->string('title');
             $table->string('description');
             $table->string('photo');
@@ -25,6 +23,7 @@ return new class extends Migration
             $table->integer('number_of_student')->nullable();
             $table->float('rating')->nullable();
             $table->float('number_of_rating')->nullable();
+            $table->enum('level', ['beginner', 'meduim', 'master']);
             $table->timestamps();
         });
     }
