@@ -13,6 +13,7 @@ use App\Models\Course;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\course\CourseIndexResource;
 use App\Http\Resources\course\CourseShowResource;
+use App\Http\Resources\ShowEnrollmentResoursce;
 use App\Models\Skills;
 
 class CourseController extends Controller
@@ -91,7 +92,12 @@ class CourseController extends Controller
         $course = Course::find($id);
         return new CourseShowResource($course);
     }
-
+    public function showEnrollment()
+    {
+        $user = auth()->user()->id;
+        $course = Course::where('user_id', $user)->get();
+        return new ShowEnrollmentResoursce($course);
+    }
     /**
      * Show the form for editing the specified resource.
      */

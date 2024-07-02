@@ -21,6 +21,7 @@ class CourseShowResource extends JsonResource
             'price' => $this->price,
             'rating' => $this->rating,
             'teacher' => $this->user->name,
+            
         ];
     }
     public function getPhoto()

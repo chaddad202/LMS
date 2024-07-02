@@ -6,6 +6,7 @@ use App\Models\Course_skills;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Skills;
+use App\Models\Enrollment;
 
 class CourseIndexResource extends JsonResource
 {
@@ -31,7 +32,8 @@ class CourseIndexResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'skils' => $this->getskill(),
-            'categories_name' => $this->categories->pluck('name')
+            'categories_name' => $this->categories->pluck('name'),
+            'num_of_enrollment' => $this->getnumenro(),
 
         ];
     }
@@ -49,5 +51,13 @@ class CourseIndexResource extends JsonResource
             ];
         }
         return $res;
+    }
+    public function getnumenro()
+    {
+        $num = 0;
+        foreach ($this->enrollments as $enrollment) {
+            $num +=  1;
+        }
+        return $num;
     }
 }

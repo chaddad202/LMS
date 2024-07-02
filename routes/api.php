@@ -50,6 +50,7 @@ Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function ()
     Route::post('/course_store', [CourseController::class, 'store']);
     Route::put('/course_update/{id}', [CourseController::class, 'update']);
     Route::delete('/course_destroy/{id}', [CourseController::class, 'destroy']);
+    Route::get('/showEnrollment', [CourseController::class, 'showEnrollment']);
     Route::post('/section_store/{course_id}', [SectionController::class, 'store']);
     Route::put('/section_update/{id}', [SectionController::class, 'update']);
     Route::get('/section_destroy/{id}', [SectionController::class, 'destroy']);
@@ -91,7 +92,7 @@ Route::group(['middleware' => ['checkAdminRole', 'auth:sanctum']], function () {
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/register_Teacher', [AuthController::class, 'register_Teacher']);  
+    Route::post('/register_Teacher', [AuthController::class, 'register_Teacher']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/comment_store', [CommentController::class, 'store']);
     Route::post('/comment_update', [CommentController::class, 'update']);
