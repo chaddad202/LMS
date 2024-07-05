@@ -22,10 +22,9 @@ class LessonUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'media' => 'file',
-            'type_id' => 'Integer|exists:types,id',
             'title' => 'string',
             'description' => 'string',
+            'file' => 'file',
             'lesson_duration' => 'timezone'
 
         ];

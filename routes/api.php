@@ -45,17 +45,17 @@ Route::post('/register_Student', [AuthController::class, 'register_Student']);
 
 Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function () {
     Route::post('/profile_teacher', [teacher_profileController::class, 'store']);
-    Route::put('/profile_teacher/update', [teacher_profileController::class, 'update']);
+    Route::post('/profile_teacher/update', [teacher_profileController::class, 'update']);
     Route::post('/profile_teacher/destroy', [teacher_profileController::class, 'destroy']);
     Route::post('/course_store', [CourseController::class, 'store']);
-    Route::put('/course_update/{id}', [CourseController::class, 'update']);
-    Route::delete('/course_destroy/{id}', [CourseController::class, 'destroy']);
+    Route::post('/course_update/{id}', [CourseController::class, 'update']);
+    Route::get('/course_destroy/{id}', [CourseController::class, 'destroy']);
     Route::get('/showEnrollment', [CourseController::class, 'showEnrollment']);
     Route::post('/section_store/{course_id}', [SectionController::class, 'store']);
-    Route::put('/section_update/{id}', [SectionController::class, 'update']);
+    Route::post('/section_update/{id}', [SectionController::class, 'update']);
     Route::get('/section_destroy/{id}', [SectionController::class, 'destroy']);
     Route::post('/quiz_store', [QuizController::class, 'store']);
-    Route::put('/quiz_update', [QuizController::class, 'update']);
+    Route::post('/quiz_update', [QuizController::class, 'update']);
     Route::post('/quiz_destroy', [QuizController::class, 'destroy']);
     Route::post('/question_store', [QuestionController::class, 'store']);
     Route::post('/question_update', [QuestionController::class, 'update']);
@@ -63,14 +63,14 @@ Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function ()
     Route::post('/choice_store', [ChoiceController::class, 'store']);
     Route::post('/choice_update', [ChoiceController::class, 'update']);
     Route::post('/choice_destroy', [ChoiceController::class, 'destroy']);
-    Route::post('/lesson_store', [LessonController::class, 'store']);
+    Route::post('/lesson_store/{section_id}', [LessonController::class, 'store']);
     Route::post('/lesson_update/{id}', [LessonController::class, 'update']);
     Route::get('/lesson_destroy/{id}', [LessonController::class, 'destroy']);
 });
 Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function () {
     Route::post('/profile_student', [student_profileController::class, 'store']);
     Route::post('/profile_student/show', [student_profileController::class, 'show']);
-    Route::put('/profile_student/update', [student_profileController::class, 'update']);
+    Route::post('/profile_student/update', [student_profileController::class, 'update']);
     Route::post('/profile_student/destroy', [student_profileController::class, 'destroy']);
     Route::post('/teacher_search', [teacher_profileController::class, 'search']);
     Route::post('/enrollment_store/{course_id}', [EnrollmentController::class, 'store']);
@@ -83,11 +83,11 @@ Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function ()
 });
 Route::group(['middleware' => ['checkAdminRole', 'auth:sanctum']], function () {
     Route::post('/skill_store', [SkillsController::class, 'store']);
-    Route::put('/skill_update/{id}', [SkillsController::class, 'update']);
-    Route::delete('/skill_destroy/{id}', [SkillsController::class, 'destroy']);
+    Route::post('/skill_update/{id}', [SkillsController::class, 'update']);
+    Route::get('/skill_destroy/{id}', [SkillsController::class, 'destroy']);
     Route::post('/category_store', [CategoryController::class, 'store']);
-    Route::put('/category_update/{id}', [CategoryController::class, 'update']);
-    Route::delete('/category_destroy/{id}', [CategoryController::class, 'destroy']);
+    Route::post('/category_update/{id}', [CategoryController::class, 'update']);
+    Route::get('/category_destroy/{id}', [CategoryController::class, 'destroy']);
 });
 
 
@@ -110,6 +110,7 @@ Route::get('/course_show/{id}', [CourseController::class, 'show']);
 Route::post('/course_search', [CourseController::class, 'search']);
 
 Route::post('/teacher_courses', [CourseController::class, 'teacher_courses']);
+Route::get('/section_index/{course_id}', [SectionController::class, 'index']);
 Route::get('/section_show/{id}', [SectionController::class, 'show']);
 Route::get('/lesson_index/{section_id}', [LessonController::class, 'index']);
 Route::get('/lesson_show/{id}', [LessonController::class, 'show']);

@@ -22,8 +22,8 @@ class SectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'course_id' => 'required|Integer|exists:courses,id',
             'title' => 'required|string',
+            'section_duration' => 'time'
         ];
     }
 }

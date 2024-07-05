@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Course;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\section\SectionRequest;
 use App\Http\Requests\section\SectionUpdateRequest;
+use App\Http\Resources\SectionIndexResource;
 use App\Http\Resources\SectionShowResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
@@ -17,8 +18,10 @@ class SectionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($course_id)
     {
+        $course = Course::find($course_id);
+        return new SectionIndexResource($course);
     }
 
     /**
@@ -42,8 +45,8 @@ class SectionController extends Controller
 
             Section::create([
                 'title' => $request->title,
-                'user_id' => $authSection,
-                'course_id' => $course_id
+                'course_id' => $course_id,
+                'section_duration' => $request->section_duration
             ]);
             return $this->returnSuccessMessage('created successfully');
         }

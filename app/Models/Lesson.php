@@ -11,7 +11,7 @@ class Lesson extends Model
     use HasFactory;
     protected $fillable = [
         'section_id',
-        'media',
+        'file',
         'description',
         'title',
 

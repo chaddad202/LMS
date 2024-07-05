@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Course;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\lesson\LessonRequest;
 use App\Http\Requests\lesson\LessonUpdateRequest;
@@ -29,7 +30,6 @@ class LessonController extends Controller
 
         $section = Section::find($section_id);
         return new LessonIndexResource($section);
-
     }
 
     /**
@@ -43,26 +43,25 @@ class LessonController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(LessonRequest $request)
+    public function store(LessonRequest $request, $section_id)
     {
-        $section = Section::find($request->section_id);
+        $section = Section::find($section_id);
         $course = $section->course;
         $user = $course->user;
         $user_id = $user->id;
         $authLesson = auth()->user()->id;
         if ($user_id == $authLesson) {
-            $type = Type::find($request->type_id);
-            $media  = $request->file('media')->store("public/$type->type");
-            $lesson = Lesson::create([
-                'section_id' => $request->section_id,
+            $file = '';
+            if ($request->hasFile('file')) {
+                $file  = $request->file('file')->store('public/file_course');
+            }
+            Lesson::create([
+                'file' => $file,
+                'section_id' => $section_id,
                 'title' => $request->title,
                 'description' => $request->description,
-                'media' => $media,
-            ]);
-
-            Type_of_lesson::create([
-                'lesson_id' => $lesson->id,
-                'type_id' => $type->id,
+                'media' => $request->media,
+                'lesson_duration' => $request->lesson_duration
             ]);
             return $this->returnSuccessMessage('Created successfully');
         }
@@ -75,7 +74,7 @@ class LessonController extends Controller
     public function show($id)
     {
         $lesson = Lesson::find($id);
-         return new LessonShowResource($lesson);
+        return new LessonShowResource($lesson);
     }
 
     /**
@@ -98,19 +97,11 @@ class LessonController extends Controller
         $user_id = $user->id;
         $authLesson = auth()->user()->id;
         if ($user_id == $authLesson) {
-            $media = $lesson->media;
-
-            if ($request->has('title') || $request->has('description')) {
-                $data = $request;
-                $lesson->update($data->all());
-            }
-
             if ($request->has('media')) {
                 Storage::delete($lesson->media);
-                $type = Type::find($request->type_id);
-                $media  = $request->file('media')->store("public/$type->type");
-                $lesson->update([$media]);
+                $request->file('media')->store("public/file_course");
             }
+            $lesson->update($request->all());
 
             return $this->returnSuccessMessage('updated successfully');
         }
@@ -129,8 +120,8 @@ class LessonController extends Controller
         $user_id = $user->id;
         $authLesson = auth()->user()->id;
         if ($user_id == $authLesson) {
-            $media = $lesson->media;
-            Storage::delete($media);
+            $file = $lesson->file;
+            Storage::delete($file);
             $lesson->delete();
             return $this->returnSuccessMessage('destoryed successfully');
         }

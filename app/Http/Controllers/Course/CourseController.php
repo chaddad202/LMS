@@ -58,7 +58,7 @@ class CourseController extends Controller
         $data['photo'] = $photo;
         $course = Course::create($data);
         foreach ($request->category as $categories) {
-            $course->category()->attach($categories['id']);
+            $course->categories()->attach($categories['id']);
         }
         foreach ($request->skills as $skill) {
             $s = Skills::where('id', $skill['id'])->first();

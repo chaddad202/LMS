@@ -22,12 +22,10 @@ class   LessonRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'section_id' => 'required|Integer|exists:sections,id',
-            'media' => 'required|file',
-            'type_id' => 'Integer|exists:types,id',
             'title' => 'required|string',
             'description' => 'required|string',
-            'lesson_duration'=>'timezone'
+            'file' => 'required|file',
+            'lesson_duration' => 'timezone'
 
         ];
     }
