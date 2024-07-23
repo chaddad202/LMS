@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\category;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryUpdateRequest extends FormRequest
+class RateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,9 +22,7 @@ class CategoryUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string',
-            'photo'=>'file'
-
+            'value' =>'required|string'
         ];
     }
 }

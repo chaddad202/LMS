@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('quiz_id')->nullable();
+            $table->foreign('quiz_id')->references('id')->on('quizzes')->onDelete('cascade');
             $table->string('question');
+            $table->integer('mark');
             $table->timestamps();
         });
     }

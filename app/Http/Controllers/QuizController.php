@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\QuizRequest;
-use App\Http\Requests\QuizUpdateRequest;
+use App\Http\Requests\enrollment\QuizUpdateRequest;
 use App\Models\Choice;
 use App\Models\Q_C;
 use App\Models\Quiz;
 use Illuminate\Http\Request;
 use App\Models\Section;
+use App\Traits\GeneralTrait;
 
 class QuizController extends Controller
 {
+    use GeneralTrait;
     /**
      * Display a listing of the resource.
      */
@@ -31,22 +33,21 @@ class QuizController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(QuizRequest $request)
+    public function store(QuizRequest $request, $section_id)
     {
-        $section = Section::find($request->section_id);
+        $section = Section::find($section_id);
         $course = $section->course;
         $user = $course->user;
         $user_id = $user->id;
         $authQuiz = auth()->user()->id;
         if ($user_id == $authQuiz) {
-            Quiz::create($request->all());
-            return response([
-                'messsage' => 'Created successfully',
-            ], 200);
+            Quiz::create([
+                'name' => $request->name,
+                'section_id' => $section_id
+            ]);
+            return $this->returnSuccessMessage("created successfully");
         }
-        return response([
-            'YOU ARE NOT THE SAME TEACHER'
-        ], 403);
+        return $this->returnError(304, "not Authenticated");
     }
 
     /**
@@ -54,18 +55,6 @@ class QuizController extends Controller
      */
     public function show(Request $request)
     {
-        $request->validate([
-            'quiz_id'  => 'required|Integer|exists:quizzes,id',
-        ]);
-        $quiz = Quiz::find($request->quiz_id);
-        $question = $quiz->questions;
-        $q_c = Q_C::where('question_id', $question->pluck('id'));
-        $choises = Choice::find($q_c->pluck('choice_id'));
-        return response([
-            'quiz' => $quiz,
-            'question' => $question,
-            'choises' => $choises
-        ], 403);
     }
 
     /**
@@ -79,32 +68,27 @@ class QuizController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(QuizUpdateRequest $request)
+    public function update(QuizRequest $request, $quiz_id)
     {
-        $section = Section::find($request->section_id);
+        $quiz = Quiz::find($quiz_id);
+        $section = $quiz->section;
         $course = $section->course;
         $user = $course->user;
         $user_id = $user->id;
         $authQuiz = auth()->user()->id;
         if ($user_id == $authQuiz) {
-            $quiz = Quiz::find($request->quiz_id);
             $quiz->update($request->all());
-            return response([
-                'messsage' => 'updated successfully',
-            ], 200);
+            return $this->returnSuccessMessage("updated successfully");
         }
-        return response([
-            'YOU ARE NOT THE SAME TEACHER'
-        ], 403);
+        return $this->returnError(304, "not Authenticated");
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy($quiz_id)
     {
-        $request->validate(['quiz_id' => 'required|Integer|exists:quizzes,id']);
-        $quiz = Quiz::find($request->quiz_id);
+        $quiz = Quiz::find($quiz_id);
         $section = $quiz->section;
         $course = $section->course;
         $user = $course->user;
@@ -112,12 +96,8 @@ class QuizController extends Controller
         $authQuiz = auth()->user()->id;
         if ($user_id == $authQuiz) {
             $quiz->delete();
-            return response([
-                'messsage' => 'deleted successfully',
-            ], 200);
+            return $this->returnSuccessMessage("destroyed successfully");
         }
-        return response([
-            'YOU ARE NOT THE SAME TEACHER'
-        ], 403);
+        return $this->returnError(304, "not Authenticated");
     }
 }

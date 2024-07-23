@@ -8,11 +8,13 @@ use App\Http\Requests\lesson\LessonUpdateRequest;
 use App\Http\Resources\lesson\LessonIndexResource;
 use App\Http\Resources\lesson\LessonShowResource;
 use App\Models\Comment;
+use App\Models\Enrollment;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
 use App\Models\Type;
 use App\Models\Type_of_lesson;
 use App\Models\Section;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Matcher\Not;
 use App\Traits\GeneralTrait;
@@ -74,7 +76,16 @@ class LessonController extends Controller
     public function show($id)
     {
         $lesson = Lesson::find($id);
-        return new LessonShowResource($lesson);
+        $section = Section::find($lesson->section_id);
+        $course = $section->course;
+        $user = $course->user;
+        $user_id = auth()->user()->id;
+        $user_login = User::find($user_id);
+        $enrollment = Enrollment::where('user_id', $user_id)->where('course_id', $course->id)->first();
+        if (($user_login->hasRole('student') && $enrollment) || ($user_login->hasRole('teacher') && $user_id == $user->id) || ($user_login->hasRole('admin'))) {
+            return new LessonShowResource($lesson);
+        }
+        return $this->returnError(304, 'you cant watch lesson without enrollment');
     }
 
     /**

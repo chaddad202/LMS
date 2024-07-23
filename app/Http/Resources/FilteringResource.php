@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Resources\course;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\Course;
 
-class CourseIndexResource extends JsonResource
+class FilteringResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,13 +17,12 @@ class CourseIndexResource extends JsonResource
     {
         return [
             'photo' => $this->photo,
-            'title' => $this->title,
-            'rating' => $this->rating,
+            'title_course' => $this->title,
+            'Rating' => $this->rating,
             'price' => $this->price,
             'level' => $this->level,
-            'instructors' => $this->user->name,
-            'Course Duration' => $this->course_duration
-
+            'instructor' => $this->user->name,
+            'course_duration' => $this->course_duration,
         ];
     }
 }

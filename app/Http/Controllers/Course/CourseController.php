@@ -13,7 +13,9 @@ use App\Models\Course;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\course\CourseIndexResource;
 use App\Http\Resources\course\CourseShowResource;
+use App\Http\Resources\FilteringResource;
 use App\Http\Resources\ShowEnrollmentResoursce;
+use App\Models\Information;
 use App\Models\Skills;
 
 class CourseController extends Controller
@@ -65,7 +67,14 @@ class CourseController extends Controller
             if ($skill['point'] > $s->maximunPoint) {
                 return $this->returnError(304, " the maximun is = $s->maximunPoint");
             }
-            $course->skills()->attach($skill['id'], ['point' => $skill['point']]);
+            $course->skills()->attach($skill['id'], ['point' => $skill['point']], ['status' => $skill['status']]);
+        }
+        foreach ($request->information as $informations) {
+            Information::create([
+                'text' => $informations['text'],
+                'status' => $informations['status'],
+                'course_id' => $course->id
+            ]);
         }
 
 
@@ -136,6 +145,7 @@ class CourseController extends Controller
         $course = Course::find($id);
         $user = auth()->user()->id;
         if ($user == $course->user_id) {
+            Storage::delete($course->photo);
             $course->delete();
             return $this->returnSuccessMessage($msg = ' deleted Successfully ');
         }
@@ -149,6 +159,7 @@ class CourseController extends Controller
             return $course;
         } else {
             return response(["message" => "medic not found"]);
+            
         }
     }
 }

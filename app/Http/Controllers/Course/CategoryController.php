@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\category\CategoryRequest;
 use App\Http\Requests\category\CategoryUpdateRequest;
 use App\Http\Resources\category\CategoryIndexResource;
+use App\Http\Resources\category\CategoryShowResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Course_category;
 use App\Traits\GeneralTrait;
+use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Constraint\IsEmpty;
 
 class CategoryController extends Controller
 {
@@ -37,7 +40,10 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        Category::create($request->all());
+        if ($request->hasFile('photo')) {
+            $photo  = $request->file('photo')->store('public/images');
+        }
+        Category::create(['name' => $request->name, 'photo' => $photo]);
         return $this->returnSuccessMessage("created succussefully");
     }
 
@@ -47,7 +53,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = Category::find($id);
-        return $category;
+        return new CategoryShowResource($category);
     }
 
     /**
@@ -63,7 +69,14 @@ class CategoryController extends Controller
      */
     public function update(CategoryUpdateRequest $request, $id)
     {
-        $category = Category::find($id);
+        if ($request->empty) {
+            return $this->returnError(304, 'nothing to update');
+        }
+        $category = Category::findOrFail($id);
+        if ($request->hasFile('photo')) {
+            Storage::delete($category->photo);
+            $photo  = $request->file('photo')->store('public/images');
+        }
         $category->update($request->all());
         return $this->returnSuccessMessage(' updated succussefully');
     }
@@ -74,7 +87,8 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $category = Category::find($id);
+        Storage::delete($category->photo);
         $category->delete();
-        return $this->returnSuccessMessage(' updated succussefully');
+        return $this->returnSuccessMessage(' deleted succussefully');
     }
 }

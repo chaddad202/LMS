@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
         $teacherRole = Role::create(['name' => 'teacher']);
         $companyOwnerRole = Role::create(['name' => 'company_owner']);
         $this->call([
-            TypeSeeder::class,
             UserSeeder::class,
             adminroleSeeder::class
         ]);

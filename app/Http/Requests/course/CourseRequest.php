@@ -26,14 +26,19 @@ class CourseRequest extends FormRequest
 
             'category'  => 'required|array',
             'category.*.id' => 'exists:categories,id',
+            'information'  => 'required|array',
+            'information.*.text' => 'required|string',
+            'information.*.status' => 'required|in:will_learn,prequisites',
             'skills' => 'required|array',
             'skills.*.id' => 'exists:skills,id',
             'skills.*.point' => 'required|integer',
+            'skills.*.status' => 'required|in:will_get,required',
             'title' => 'required|string',
+            'level' => 'required|in:beginner,meduim,master',
             'description' => 'required|string',
             'photo' => 'file',
-            'price'  => 'required|Integer',
-            'level' => 'required|in:beginner,medium,master'
+            'price'  => 'Integer',
+            'course_duration' => 'timezone'
 
 
         ];

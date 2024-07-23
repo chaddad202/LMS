@@ -14,9 +14,19 @@ class LessonIndexResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return[
-            'lesson title' => $this->lessons->pluck('title'),
-
+        return [
+            'lesson_of_section' => $this->return(),
         ];
+    }
+    function return()
+    {
+        $res = [];
+        foreach ($this->lessons as $lesson) {
+            $res[] = [
+                'lesson_title' => $lesson->title,
+                'lesson_duration' => $lesson->lesson_duration
+            ];
+        }
+        return $res;
     }
 }

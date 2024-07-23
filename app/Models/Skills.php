@@ -10,7 +10,7 @@ class Skills extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'title', 'maximunPoint'
+        'title', 'maximunPoint','status'
     ];
 
     public function courses()

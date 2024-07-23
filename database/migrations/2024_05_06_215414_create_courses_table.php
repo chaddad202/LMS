@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
             $table->string('photo');
-            $table->integer('price');
+            $table->integer('price')->nullable();
             $table->time('course_duration')->nullable();
             $table->integer('number_of_student')->nullable();
             $table->float('rating')->nullable();

@@ -13,12 +13,13 @@ class Quiz extends Model
         'section_id',
         'num_of_question',
         'mark',
+        'name'
 
     ];
 
     public function questions()
     {
-        return $this->belongsToMany(Question::class, 'q_qs');
+        return $this->hasMany(Question::class);
     }
 
     public function section()

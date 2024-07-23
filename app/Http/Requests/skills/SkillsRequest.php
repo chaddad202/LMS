@@ -22,7 +22,7 @@ class SkillsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string',
+            'title' => 'required|unique:skills,title|string',
             'maximunPoint' => 'required|Integer',
         ];
     }

@@ -11,7 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasRoles ,HasFactory, Notifiable;
+    use HasApiTokens, HasRoles, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -43,69 +43,77 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-        public function roles()
-        {
-            return $this->belongsToMany(Role::class);
-        }
-       
-        public function teacher_profile()
-        {
-            return $this->hasone(teacher_profile::class);
-        }
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
 
-        public function student_profile()
-        {
-            return $this->hasone(student_profile::class);
-        }
+    public function teacher_profile()
+    {
+        return $this->hasone(teacher_profile::class);
+    }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 
-        public function permissions()
-        {
-            return $this->belongsToMany(Permission::class);
-        }
 
-        public function ratings()
-        {
+    public function student_profile()
+    {
+        return $this->hasone(student_profile::class);
+    }
+    public function rates()
+    {
+        return $this->hasMany(Rate::class);
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+
+    public function ratings()
+    {
         return $this->hasMany(Rating::class);
-        }
+    }
 
-        public function favourites()
-        {
+    public function favourites()
+    {
         return $this->hasMany(Favorite::class);
-        }
+    }
 
-        public function certificates()
-        {
-            return$this ->hasMany(Certificate::class);
-        }
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
 
-        public function company()
-        {
-            return $this->belongsTo(Company::class);
-        }#
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    } #
 
-        public function answers()
-        {
-            return$this ->hasMany(Answer::class);
-        }
-    
-        public function progress_students()
-        {
-            return$this ->hasMany(Progress_Student::class);
-        }
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
 
-        public function comments()
-        {
-            return$this ->hasMany(Comment::class);
-        }
+    public function progress_students()
+    {
+        return $this->hasMany(Progress_Student::class);
+    }
 
-        public function courses()
-        {
-            return$this ->hasMany(Course::class);
-        }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 
-        public function enrollments()
-        {
-            return $this->hasMany(Enrollment::class);
-        }
-    
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
 }

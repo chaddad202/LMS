@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Course\CategoryController;
 use App\Http\Controllers\ChoiceController;
-use App\Http\Controllers\CommentController;
+use App\Http\Controllers\Course\CommentController;
 use App\Http\Controllers\Course\CourseController;
 use App\Http\Controllers\Course\EnrollmentController;
 use App\Http\Controllers\FavoriteController;
@@ -17,6 +17,11 @@ use App\Http\Controllers\Course\LessonController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\Course\SkillsController;
+use App\Http\Controllers\FilterControler;
+use App\Http\Controllers\RateController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Resources\FilteringResource;
+use App\Models\Review;
 use App\Models\teacher_profile;
 
 /*
@@ -54,18 +59,18 @@ Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function ()
     Route::post('/section_store/{course_id}', [SectionController::class, 'store']);
     Route::post('/section_update/{id}', [SectionController::class, 'update']);
     Route::get('/section_destroy/{id}', [SectionController::class, 'destroy']);
-    Route::post('/quiz_store', [QuizController::class, 'store']);
-    Route::post('/quiz_update', [QuizController::class, 'update']);
-    Route::post('/quiz_destroy', [QuizController::class, 'destroy']);
-    Route::post('/question_store', [QuestionController::class, 'store']);
+    Route::post('/lesson_store/{section_id}', [LessonController::class, 'store']);
+    Route::post('/lesson_update/{id}', [LessonController::class, 'update']);
+    Route::get('/lesson_destroy/{id}', [LessonController::class, 'destroy']);
+    Route::post('/quiz_store/{section_id}', [QuizController::class, 'store']);
+    Route::post('/quiz_update/{quiz_id}', [QuizController::class, 'update']);
+    Route::get('/quiz_destroy/{quiz_id}', [QuizController::class, 'destroy']);
+    Route::post('/question_store/{quiz_id}', [QuestionController::class, 'store']);
     Route::post('/question_update', [QuestionController::class, 'update']);
     Route::post('/question_destroy', [QuestionController::class, 'destroy']);
     Route::post('/choice_store', [ChoiceController::class, 'store']);
     Route::post('/choice_update', [ChoiceController::class, 'update']);
     Route::post('/choice_destroy', [ChoiceController::class, 'destroy']);
-    Route::post('/lesson_store/{section_id}', [LessonController::class, 'store']);
-    Route::post('/lesson_update/{id}', [LessonController::class, 'update']);
-    Route::get('/lesson_destroy/{id}', [LessonController::class, 'destroy']);
 });
 Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function () {
     Route::post('/profile_student', [student_profileController::class, 'store']);
@@ -80,6 +85,9 @@ Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function ()
     Route::post('/Quiz_show', [QuizController::class, 'show']);
     Route::post('/answer_store', [AnswerController::class, 'store']);
     Route::post('/my_mark_show', [AnswerController::class, 'my_mark']);
+    Route::post('/rate_store/{course_id}', [RateController::class, 'store']);
+    Route::post('/rate_update/{rate_id}', [RateController::class, 'update']);
+    Route::post('/rate_destroy/{rate_id}', [RateController::class, 'destroy']);
 });
 Route::group(['middleware' => ['checkAdminRole', 'auth:sanctum']], function () {
     Route::post('/skill_store', [SkillsController::class, 'store']);
@@ -94,16 +102,19 @@ Route::group(['middleware' => ['checkAdminRole', 'auth:sanctum']], function () {
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/register_Teacher', [AuthController::class, 'register_Teacher']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/comment_store', [CommentController::class, 'store']);
-    Route::post('/comment_update', [CommentController::class, 'update']);
-    Route::post('/comment_destroy', [CommentController::class, 'destroy']);
-    Route::post('/comment_reply', [CommentController::class, 'reply']);
+    Route::post('/comment_store/{id}', [CommentController::class, 'store']);
+    Route::post('/comment_update/{id}', [CommentController::class, 'update']);
+    Route::get('/comment_destroy/{id}', [CommentController::class, 'destroy']);
+    Route::post('/comment_reply/{id}', [CommentController::class, 'reply']);
     Route::get('/enrollment_index', [EnrollmentController::class, 'index']);
+    Route::get('/lesson_show/{id}', [LessonController::class, 'show']);
+    Route::post('/review_store/{course_id}', [ReviewController::class, 'store']);
+    Route::post('/review_update/{review_id}', [ReviewController::class, 'update']);
+    Route::post('/review_destroy/{review_id}', [ReviewController::class, 'destroy']);
 });
 
 Route::post('/profile_teacher_show', [teacher_profileController::class, 'show']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/category_show/{id}', [CategoryController::class, 'show']);
 Route::get('/category_index', [CategoryController::class, 'index']);
 Route::get('/course_index', [CourseController::class, 'index']);
 Route::get('/course_show/{id}', [CourseController::class, 'show']);
@@ -113,7 +124,25 @@ Route::post('/teacher_courses', [CourseController::class, 'teacher_courses']);
 Route::get('/section_index/{course_id}', [SectionController::class, 'index']);
 Route::get('/section_show/{id}', [SectionController::class, 'show']);
 Route::get('/lesson_index/{section_id}', [LessonController::class, 'index']);
-Route::get('/lesson_show/{id}', [LessonController::class, 'show']);
 Route::post('/enrollment_show/{course_id}', [EnrollmentController::class, 'show']);
 Route::get('/skill_show/{id}', [SkillsController::class, 'show']);
 Route::get('/skill_index', [SkillsController::class, 'index']);
+Route::get('/review_show/{id}', [ReviewController::class, 'show']);
+Route::get('/review_index', [ReviewController::class, 'index']);
+Route::get('/Rate_show/{id}', [RateController::class, 'show']);
+
+
+/////////////////filters///////////////////////////////
+
+Route::get('/level_show/{id}', [FilterControler::class, 'level_show']);
+Route::get('/price_show/{id}', [FilterControler::class, 'price_show']);
+Route::get('/order_show/{id}', [FilterControler::class, 'order_show']);
+Route::post('/category_show/{id}', [CategoryController::class, 'show']);
+
+
+////////////////explore////////////////////////////////
+
+Route::get('/course_explore', [FilterControler::class, 'course_explore']);
+Route::get('/category_explore', [FilterControler::class, 'category_explore']);
+Route::get('/review_explore', [FilterControler::class, 'review_explore']);
+Route::get('/related_courses/{course_id}', [FilterControler::class, 'related_courses']);

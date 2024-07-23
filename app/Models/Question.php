@@ -19,12 +19,12 @@ class Question extends Model
 
     public function choices()
     {
-        return $this->belongsToMany(Choice::class, 'q_cs');
+        return $this->hasMany(Choice::class);
     }
 
-    public function quizzes()
+    public function quiz()
     {
-        return $this->belongsToMany(Quiz::class, 'q_qs');
+        return $this->belongsTo(Quiz::class);
     }
 
     public function answers()

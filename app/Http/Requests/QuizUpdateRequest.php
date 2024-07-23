@@ -22,10 +22,7 @@ class QuizUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'quiz_id' => 'required|Integer|exists:quizzes,id',
-            'section_id' => 'Integer|exists:sections,id',
-            'num_of_question' => 'Integer',
-            'mark' => 'Integer',
+           
         ];
     }
 }

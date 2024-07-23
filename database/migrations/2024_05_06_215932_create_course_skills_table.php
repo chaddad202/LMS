@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
             $table->foreign('skills_id')->references('id')->on('skills')->onDelete('cascade');
             $table->integer('point')->nullable();
+            $table->enum('status', ['will_get', 'required']);
             $table->timestamps();
         });
     }

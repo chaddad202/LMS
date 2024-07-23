@@ -15,8 +15,20 @@ class CategoryIndexResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name' => $this->name,
+            'category' => [
+                'name' =>  $this->name,
+                'photo'  => $this->photo,
+                'Availble course' => $this->getavailble()
+            ],
 
         ];
+    }
+    public function getavailble()
+    {
+        $r = 0;
+        foreach ($this->courses as $course) {
+            $r++;
+        }
+        return $r;
     }
 }

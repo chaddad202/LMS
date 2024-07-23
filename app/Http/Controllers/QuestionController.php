@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\QuestionRequest;
+use App\Models\Choice;
 use App\Models\Q_Q;
 use App\Models\Question;
+use App\Models\Quiz;
 use Illuminate\Http\Request;
-
+use App\Traits\GeneralTrait;
 
 class QuestionController extends Controller
 {
+    use GeneralTrait;
     /**
      * Display a listing of the resource.
      */
@@ -28,26 +32,23 @@ class QuestionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(QuestionRequest $request, $quiz_id)
     {
-        $request->validate([
-            'quiz_id' => 'required|Integer|exists:quizzes,id',
-            'question' => 'required|string',
-            'mark' => 'required|Integer'
-        ]);
-        $question = '';
-        $question = Question::where('question', $request->question)->first();
-        if (!$question) {
-            $question =   Question::create(['question' => $request->question]);
+        foreach ($request->question as $questionData) {
+            $question = Question::create([
+                'question' => $questionData['question'],
+                'mark' => $questionData['mark'],
+                'quiz_id' => $quiz_id
+            ]);
+
+            foreach ($questionData['choices'] as $choiceData) {
+                Choice::create([
+                    'choice_text' => $choiceData['choice_text'],
+                    'isAnswer' => $choiceData['isAnswer'],
+                    'question_id' => $question->id
+                ]);
+            }
         }
-        Q_Q::create([
-            'question_id' => $question->id,
-            'quiz_id' => $request->quiz_id,
-            'mark' => $request->mark
-        ]);
-        return response([
-            'messsage' => 'created successfully',
-        ], 200);
     }
 
     /**

@@ -68,6 +68,10 @@ class Course extends Model
     {
         return $this->hasMany(Rating::class);
     }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 
     public function coupons()
     {
@@ -77,6 +81,14 @@ class Course extends Model
     public function sections()
     {
         return $this->hasMany(Section::class);
+    }
+    public function rates()
+    {
+        return $this->hasMany(Rate::class);
+    }
+    public function informations()
+    {
+        return $this->hasMany(Information::class);
     }
 
     public function progress_students()

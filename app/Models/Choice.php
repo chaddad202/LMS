@@ -17,9 +17,9 @@ class Choice extends Model
 
     ];
 
-    public function questions()
+    public function question()
     {
-        return $this->belongsToMany(Question::class, 'q_cs');
+        return $this->belongsTo(Question::class);
     }
     public function answers()
     {

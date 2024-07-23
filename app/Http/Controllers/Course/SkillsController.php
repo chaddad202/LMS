@@ -39,6 +39,9 @@ class SkillsController extends Controller
      */
     public function store(SkillsRequest $request)
     {
+        if ($request->maximunPoint > 100) {
+            return $this->returnError(304, 'maximun=100');
+        }
         Skills::create($request->all());
         return $this->returnSuccessMessage('created successfully');
     }
@@ -66,7 +69,7 @@ class SkillsController extends Controller
      */
     public function update(SkillsUpdateRequest $request, $id)
     {
-        if ($request == nullOrEmptyString()) {
+        if ($request == Null) {
             return $this->returnError(304, 'nothing to update');
         }
         $skill = Skills::findOrFail($id);
