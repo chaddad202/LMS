@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Coupon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 
@@ -15,6 +16,8 @@ class CouponFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    protected $model = Coupon::class;
+
     public function definition(): array
     {
         return [

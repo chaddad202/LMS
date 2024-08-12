@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 use App\Models\Coupon;
 use App\Models\Category;
+use App\Models\Course;
 
 /**;
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Course>
@@ -17,10 +18,14 @@ class CourseFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    protected $model = Course::class;
+
     public function definition(): array
     {
+        $userWithCustomer = User::whereHas('customer')->inRandomOrder()->first();
+
         return [
-            'user_id' => User::factory(), // Creates a new user and assigns the user_id
+            'user_id' => $userWithCustomer ? $userWithCustomer->id : User::factory(), // Ensure user has a customer
             'coupon_id' => Coupon::factory()->nullable(), // Creates a new coupon or leaves it null
             'category_id' => Category::factory(), // Creates a new category and assigns the category_id
             'title' => $this->faker->sentence(), // Generates a random course title
