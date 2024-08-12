@@ -22,7 +22,8 @@ class QuizUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-           
+            'name' => 'string',
+            'num_of_question' => 'integer'
         ];
     }
 }

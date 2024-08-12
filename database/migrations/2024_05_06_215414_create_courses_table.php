@@ -25,6 +25,7 @@ return new class extends Migration
             $table->float('price');
             $table->time('course_duration')->nullable();
             $table->enum('level', ['beginner', 'intemediate', 'advanced']);
+            $table->enum('type', ['draft', 'publish']);
             $table->timestamps();
         });
     }

@@ -22,7 +22,7 @@ class NoteUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'note' => 'sometimes|required|string'
+            'note' => 'string'
         ];
     }
 }

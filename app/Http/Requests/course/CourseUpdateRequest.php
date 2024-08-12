@@ -22,12 +22,12 @@ class CourseUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'sometimes|required|Integer|exists:categories,id',
-            'coupon_id' => 'sometimes|required|Integer|exists:coupons,id',
-            'title' => 'sometimes|required|string',
-            'description' => 'sometimes|required|string',
-            'photo' => 'sometimes|required|file',
-            'price'  => 'sometimes|required|Integer',
+            'category_id' => 'Integer|exists:categories,id',
+            'coupon_id' => 'Integer|exists:coupons,id',
+            'title' => 'string',
+            'description' => 'string',
+            'photo' => 'file',
+            'price'  => 'Integer',
 
         ];
     }

@@ -4,7 +4,10 @@ namespace App\Http\Requests\section;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SectionUpdateRequest extends FormRequest
+class
+
+
+SectionUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +26,7 @@ class SectionUpdateRequest extends FormRequest
     {
         return [
 
-            'title' => 'sometimes|required|required|string',
+            'title' => 'required|string',
             'section_duration' => ['regex:/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/'], // التحقق من الوقت بصيغة HH:mm
 
         ];

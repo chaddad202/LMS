@@ -22,7 +22,7 @@ class ReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'comment' => 'sometimes|required|string',
+            'comment' => 'string',
         ];
     }
 }

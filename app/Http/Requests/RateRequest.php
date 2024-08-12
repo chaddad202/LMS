@@ -22,7 +22,7 @@ class RateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'value' => 'sometimes|required|integer|min:1|max:5',
+            'value' => 'integer|min:1|max:5',
         ];
     }
 }
