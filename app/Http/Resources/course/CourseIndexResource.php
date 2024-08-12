@@ -15,13 +15,13 @@ class CourseIndexResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'photo' => $this->photo,
+            'photo'  => asset('storage/' . str_replace('public/', '', $this->photo)),
             'title' => $this->title,
             'rating' => $this->rating,
             'price' => $this->price,
             'level' => $this->level,
             'instructors' => $this->user->name,
-            'Course Duration' => $this->course_duration
+            'Course_Duration' => $this->course_duration
 
         ];
     }

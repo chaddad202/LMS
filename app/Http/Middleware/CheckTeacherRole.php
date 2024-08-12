@@ -14,12 +14,12 @@ class CheckTeacherRole
 
         $user2 = auth()->user()->id;
         $user = User::find($user2);
-        if ($user && $user->hasRole('teacher')) {
+        if ($user && ($user->hasRole('teacher') || $user->hasRole('admin'))) {
             return $next($request);
         }
         // return response([
         //     $user2
         // ],401);
-        throw UnauthorizedException::forRoles(['teacher']);
+        throw UnauthorizedException::forRoles(['teacher','admin']);
     }
 }

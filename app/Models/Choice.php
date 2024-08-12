@@ -13,6 +13,8 @@ class Choice extends Model
     use HasFactory;
     protected $fillable = [
         'choice_text',
+        'isAnswer',
+        'question_id'
 
 
     ];

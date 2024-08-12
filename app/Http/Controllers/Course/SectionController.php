@@ -10,6 +10,7 @@ use App\Http\Resources\SectionShowResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Models\Section;
+use App\Models\User;
 use App\Traits\GeneralTrait;
 
 class SectionController extends Controller
@@ -37,11 +38,13 @@ class SectionController extends Controller
     public function store(SectionRequest $request, $course_id)
     {
 
-        $course = Course::find($course_id);
+        $course = Course::findOrFail($course_id);
         $user = $course->user;
         $user_id = $user->id;
         $authSection = auth()->user()->id;
-        if ($user_id == $authSection) {
+        $user_auth = User::find($authSection);
+
+        if ($user_id == $authSection || $user_auth->hasRole('admin')) {
 
             Section::create([
                 'title' => $request->title,
@@ -75,12 +78,17 @@ class SectionController extends Controller
      */
     public function update(SectionUpdateRequest $request, $id)
     {
-        $section = Section::find($id);
+        $section = Section::findOrFail($id);
         $course = $section->course;
         $user = $course->user;
         $user_id = $user->id;
         $authSection = auth()->user()->id;
-        if ($user_id == $authSection) {
+        $user_auth = User::find($authSection);
+
+        if ($user_id == $authSection || $user_auth->hasRole('admin')) {
+            if ($request->all() === null || count($request->all()) === 0) {
+                return $this->returnError(403, 'request input is empty!');
+            }
             $section->update($request->all());
 
             return $this->returnSuccessMessage('updated successfully');
@@ -94,12 +102,13 @@ class SectionController extends Controller
     public function destroy($id)
     {
 
-        $section = Section::find($id);
+        $section = Section::findOrFail($id);
         $course = $section->course;
         $user = $course->user;
         $user_id = $user->id;
         $authSection = auth()->user()->id;
-        if ($user_id == $authSection) {
+        $user_auth = User::find($authSection);
+        if ($user_auth->hasRole('admin') ||  $user_id == $authSection) {
             $section->delete();
             return $this->returnSuccessMessage('deleted successfully');
         }

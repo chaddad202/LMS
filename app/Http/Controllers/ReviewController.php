@@ -8,13 +8,15 @@ use App\Http\Resources\ReviewShowResource;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use App\Traits\GeneralTrait;
+use App\Models\Rate;
+use App\Models\User;
 
 class ReviewController extends Controller
 {
     use GeneralTrait;
     public function index()
     {
-        $review=Review::all();
+        $review = Review::all();
         return ReviewIndexResource::collection($review);
     }
 
@@ -32,6 +34,10 @@ class ReviewController extends Controller
     public function store(ReviewRequest $request, $course_id)
     {
         $user = auth()->user()->id;
+        $rate = Rate::where('course_id', $course_id)->where('user_id', $user)->first();
+        if (!$rate) {
+            return $this->returnError(304, 'you should rate before');
+        }
         Review::create([
             'user_id' => $user,
             'course_id' => $course_id,
@@ -63,9 +69,13 @@ class ReviewController extends Controller
      */
     public function update(ReviewRequest $request, $review_id)
     {
+        if ($request->all() === null || count($request->all()) === 0) {
+            return $this->returnError(400, 'request input is empty!');
+        }
         $user_id = auth()->user()->id;
+        $user = User::find($user_id);
         $review = Review::find($review_id);
-        if ($user_id == $review->user_id) {
+        if ($user_id == $review->user_id || $user->hasRole('admin')) {
             $review->update($request->all());
             return $this->returnSuccessMessage('updated successfully');
         }
@@ -78,8 +88,9 @@ class ReviewController extends Controller
     public function destroy($review_id)
     {
         $user_id = auth()->user()->id;
+        $user = User::find($user_id);
         $review = Review::find($review_id);
-        if ($user_id == $review->user_id) {
+        if ($user_id == $review->user_id || $user->hasRole('admin')) {
             $review->delet();
             return $this->returnSuccessMessage('deleted successfully');
         }

@@ -14,20 +14,24 @@ class Lesson extends Model
         'file',
         'description',
         'title',
+        'lesson_duration'
 
     ];
     public function types()
     {
         return $this->belongsToMany(Type::class, 'type_of_lessons');
     }
-
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
     public function section()
     {
         return $this->belongsTo(Section::class);
     }
 
-    public function comments()
+    public function q_a()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Q_a::class);
     }
 }

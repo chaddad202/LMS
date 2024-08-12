@@ -82,7 +82,7 @@ class teacher_profileController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(TeacherProfileUpdateRequest $request)
+    public function update(Request $request)
     {
         $teacher = User::find($request->user_id);
         $profile = $teacher->teacher_profile;

@@ -48,65 +48,47 @@ class QuestionController extends Controller
                     'question_id' => $question->id
                 ]);
             }
+            return $this->returnSuccessMessage(" created succesfully");
+
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
-    {
-    }
+    public function show(Request $request) {}
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-    }
+    public function edit(string $id) {}
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(QuestionRequest $request, $question_id)
     {
-        $request->validate([
-            'quiz_id' => 'required|Integer|exists:quizzes,id',
-            'question_id'    => 'required|Integer|exists:questions,id',
-            'question' => 'string',
-            'mark' => 'Integer'
-        ]);
-        $Q_Q = Q_Q::where('quiz_id', $request->quiz_id)->where('question_id', $request->question_id)->first();
-        if ($request->has('question')) {
-            $question = Question::where('question', $request->question)->first();
-            if (!$question) {
-                $question =   Question::create(['question' => $request->question]);
-            }
-            $Q_Q->update(['question_id' => $question->id]);
+        $question = Question::findOrFail($question_id);
+        if ($request->all() === null || count($request->all()) === 0) {
+            return response(['message' => 'request input is empty!'], 403);
         }
-        if ($request->has('mark')) {
-            $Q_Q->update(['mark' => $request->mark]);
+        if ($question->user_id != auth()->user()->id) {
+            return response(['message' => 'not authountcated'], 401);
         }
-        return response([
-            'messsage' => 'updated successfully',
-        ], 200);
-        //
+        $question->update($request->all());
+        return $this->returnSuccessMessage(" updated succesfully");
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy($question_id)
     {
-        $request->validate([
-            'quiz_id' => 'required|Integer|exists:quizzes,id',
-            'question_id'    => 'required|Integer|exists:questions,id',
-        ]);
-        $Q_Q = Q_Q::where('quiz_id', $request->quiz_id)->where('question_id', $request->question_id);
-        $Q_Q->delete();
-        return response([
-            'messsage' => 'destroyed successfully',
-        ], 200);
+        $question = Question::findOrFail($question_id);
+        if ($question->user_id != auth()->user()->id) {
+            return response(['message' => 'not authountcated'], 401);
+        }
+        $question->delete();
+        return $this->returnSuccessMessage(" deleted succesfully");
     }
 }

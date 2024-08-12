@@ -15,8 +15,10 @@ use App\Http\Resources\course\CourseIndexResource;
 use App\Http\Resources\course\CourseShowResource;
 use App\Http\Resources\FilteringResource;
 use App\Http\Resources\ShowEnrollmentResoursce;
+use App\Models\Coupon;
 use App\Models\Information;
 use App\Models\Skills;
+use App\Models\Gain_prequist;
 
 class CourseController extends Controller
 {
@@ -43,15 +45,20 @@ class CourseController extends Controller
      */
     public function store(CourseRequest $request)
     {
-
+        $user = auth()->user()->id;
+        $coupon = Coupon::findOrFail($request->coupon_id);
+        if ($user != $coupon->user_id) {
+            return response(['message' => 'not authountcated'], 401);
+        }
         $data = [
             'title' => $request->title,
             'description' => $request->description,
             'photo' => $request->photo,
             'price'  => $request->price,
-            'level' => $request->level
+            'level' => $request->level,
+            'category_id' => $request->category_id,
+            'coupon_id' => $request->coupon_id,
         ];
-        $user = auth()->user()->id;
         $data['user_id'] = $user;
         $photo  = '';
         if ($request->hasFile('photo')) {
@@ -59,20 +66,31 @@ class CourseController extends Controller
         }
         $data['photo'] = $photo;
         $course = Course::create($data);
-        foreach ($request->category as $categories) {
-            $course->categories()->attach($categories['id']);
-        }
+        $course_level = $request->level;
         foreach ($request->skills as $skill) {
             $s = Skills::where('id', $skill['id'])->first();
-            if ($skill['point'] > $s->maximunPoint) {
-                return $this->returnError(304, " the maximun is = $s->maximunPoint");
+            $point_max = 0;
+            $point_min = 0;
+            if ($course_level == 'beginner') {
+                $point_max = $s->maximunBeginner;
+            } else if ($course_level == 'intemediate') {
+                $point_max = $s->maximunIntemediate;
+                $point_min = 26;
+            } else {
+                $point_max = $s->maximunAdvanced;
+                $point_min = 76;
+            }
+            if ($skill['point'] > $point_max) {
+                return $this->returnError(304, " the maximun for $s->title = $point_max");
+            } else if ($skill['point'] < $point_min) {
+                return $this->returnError(304, " the min for $s->title = $point_min");
             }
             $course->skills()->attach($skill['id'], ['point' => $skill['point']], ['status' => $skill['status']]);
         }
-        foreach ($request->information as $informations) {
-            Information::create([
-                'text' => $informations['text'],
-                'status' => $informations['status'],
+        foreach ($request->gain_prequist as $gain_prequists) {
+            Gain_prequist::create([
+                'text' => $gain_prequists['text'],
+                'status' => $gain_prequists['status'],
                 'course_id' => $course->id
             ]);
         }
@@ -84,21 +102,18 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function teacher_courses(Request $request)
+    public function teacher_courses($id)
     {
-        $request->validate(["user_id" => "required|Integer|exists:users,id"]);
-        $teacher = User::find($request->user_id);
-        $courses = $teacher->courses->all();
-        $key = 'data';
-
-        if (!$courses) {
-            return $this->returnSuccessMessage('no courses yet');
+        $user = User::findOrFail($id);
+        $courses =  Course::where('user_id', $id)->get();
+        if ($courses->isEmpty()) {
+            return response(['message' => 'not found'], 404);
         }
-        return $this->returnData($key, $courses, $msg = 'Successfully ');
+        return FilteringResource::collection($courses);
     }
     public function show($id)
     {
-        $course = Course::find($id);
+        $course = Course::findOrFail($id);
         return new CourseShowResource($course);
     }
     public function showEnrollment()
@@ -122,19 +137,28 @@ class CourseController extends Controller
     {
 
         $course = Course::findOrfail($id);
+        if ($request->all() === null || count($request->all()) === 0) {
+            return response(['message' => 'request is empty'], 403);
+        }
         $user = auth()->user()->id;
-        if ($user == $course->user_id) {
+        $user_auth = User::find($user);
+        if ($user == $course->user_id || $user_auth->hasRole('admin')) {
             $data = $request->all();
             if ($request->hasFile('photo')) {
                 Storage::delete($course->photo);
                 $photo  = $request->file('photo')->store('public/images');
                 $data['photo'] = $photo;
             }
+            if ($request->has('coupon_id')) {
+                $coupon = Coupon::findOrFail($request->coupon_id);
+                if ($user != $coupon->user_id) {
+                    return $this->returnError(304, 'Unauthenticated');
+                }
+            }
             $course->update($data);
-            $key = "data";
-            return $this->returnSuccessMessage($msg = ' updated Successfully ');
+            return $this->returnSuccessMessage(' updated Successfully ');
         }
-        return $this->returnError(401, 'Unauthenticated');
+        return response(['message' => 'not authountcated'], 401);
     }
 
     /**
@@ -142,24 +166,25 @@ class CourseController extends Controller
      */
     public function destroy($id)
     {
-        $course = Course::find($id);
+        $course = Course::findOrFail($id);
         $user = auth()->user()->id;
-        if ($user == $course->user_id) {
+
+        $user_auth = User::find($user);
+        if ($user == $course->user_id || $user_auth->hasRole('admin')) {
             Storage::delete($course->photo);
             $course->delete();
             return $this->returnSuccessMessage($msg = ' deleted Successfully ');
         }
-        return $this->returnError(401, 'Unauthenticated');
+        return response(['message' => 'not authountcated'], 401);
     }
     public function search(Request $request)
     {
         $searchcourse = $request->validate(['title' => 'required']);
-        $course = Course::where('title', 'like', '%' . $searchcourse['title'] . '%')->get();
+        $course = Course::where('title', 'like', '%' . $searchcourse['title'] . '%')->take(12)->get();
         if (!count($course) == 0) {
-            return $course;
+            return FilteringResource::collection($course);
         } else {
-            return response(["message" => "medic not found"]);
-            
+            return response(['message' => 'not found'], 404);
         }
     }
 }

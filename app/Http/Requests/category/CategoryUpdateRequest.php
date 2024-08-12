@@ -22,8 +22,8 @@ class CategoryUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string',
-            'photo'=>'file'
+            'name' => 'sometimes|required|string',
+            'photo'=> 'sometimes|required|file'
 
         ];
     }

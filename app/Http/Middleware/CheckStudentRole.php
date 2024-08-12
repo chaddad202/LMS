@@ -15,7 +15,7 @@ class CheckStudentRole
 
         $user2 = auth()->user()->id;
         $user = User::find($user2);
-        if ($user && $user->hasRole('student')) {
+        if ($user && ($user->hasRole('student')||$user->hasRole('admin')) ) {
             return $next($request);
         }
 

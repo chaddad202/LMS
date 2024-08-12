@@ -23,7 +23,7 @@ class SectionRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'section_duration' => 'time'
+            'section_duration' => ['regex:/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/'], // التحقق من الوقت بصيغة HH:mm
         ];
     }
 }

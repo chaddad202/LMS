@@ -23,6 +23,7 @@ class QuestionRequest extends FormRequest
     {
         return [
             'question' => 'required|array',
+            'question.*.question' => 'required|string',
             'question.*.mark' => 'required|integer',
             'question.*.choices' => 'required|array',
             'question.*.choices.*.choice_text' => 'required|string',

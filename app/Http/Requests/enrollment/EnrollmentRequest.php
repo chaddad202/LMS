@@ -23,8 +23,8 @@ class EnrollmentRequest extends FormRequest
     {
         return [
             'progress' => 'Date',
-            'totalPayment' => 'required|integer'
-
+            'coupon_code' =>'string',
+            'user_id' => 'Integer|exists:users,id',
         ];
     }
 }

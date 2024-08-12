@@ -21,7 +21,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password'
+        'password',
+        'wallet',
+        'remember_token'
     ];
 
     /**
@@ -43,24 +45,41 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
     public function roles()
     {
         return $this->belongsToMany(Role::class);
     }
-
-    public function teacher_profile()
+    public function skills()
     {
-        return $this->hasone(teacher_profile::class);
+        return $this->belongsToMany(Skills::class);
     }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
-
-
-    public function student_profile()
+    public function notes()
     {
-        return $this->hasone(student_profile::class);
+        return $this->hasMany(Note::class);
+    }
+    public function gifts()
+    {
+        return $this->hasMany(Gift::class);
+    }
+
+
+    public function category()
+    {
+        return $this->hasone(Category::class);
+    }
+    public function customer()
+    {
+        return $this->hasone(Customer::class);
+    }
+    public function order()
+    {
+        return $this->hasone(Order::class);
     }
     public function rates()
     {
@@ -74,7 +93,7 @@ class User extends Authenticatable
 
     public function ratings()
     {
-        return $this->hasMany(Rating::class);
+        return $this->hasMany(Rate::class);
     }
 
     public function favourites()
@@ -102,9 +121,9 @@ class User extends Authenticatable
         return $this->hasMany(Progress_Student::class);
     }
 
-    public function comments()
+    public function q_a()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Q_a::class);
     }
 
     public function courses()

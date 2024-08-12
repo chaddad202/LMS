@@ -10,11 +10,15 @@ class Skills extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'title', 'maximunPoint','status'
+        'title', 'maximunBeginner', 'maximunIntemediate', 'maximunAdvanced',
     ];
 
     public function courses()
     {
         return $this->BelongsToMany(Course::class, 'course_skills');
+    }
+    public function users()
+    {
+        return $this->BelongsToMany(Course::class, 'user_skills');
     }
 }

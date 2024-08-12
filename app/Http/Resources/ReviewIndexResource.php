@@ -15,7 +15,7 @@ class ReviewIndexResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'photo' => $this->pluck('user')->pluck('photo'),
+            'photo' => asset('storage/' . str_replace('public/', '', $this->pluck('user')->pluck('photo'))),
             'name' => $this->pluck('user')->pluck('name'),
             'date' => $this->pluck('created_at'),
             'comment' => $this->pluck('comment')

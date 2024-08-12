@@ -35,7 +35,7 @@ class QuizController extends Controller
      */
     public function store(QuizRequest $request, $section_id)
     {
-        $section = Section::find($section_id);
+        $section = Section::findOrFail($section_id);
         $course = $section->course;
         $user = $course->user;
         $user_id = $user->id;
@@ -47,7 +47,7 @@ class QuizController extends Controller
             ]);
             return $this->returnSuccessMessage("created successfully");
         }
-        return $this->returnError(304, "not Authenticated");
+        return response(['message' => 'not authountcated'], 401);
     }
 
     /**
@@ -68,7 +68,7 @@ class QuizController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(QuizRequest $request, $quiz_id)
+    public function update(QuizUpdateRequest $request, $quiz_id)
     {
         $quiz = Quiz::find($quiz_id);
         $section = $quiz->section;
@@ -80,7 +80,7 @@ class QuizController extends Controller
             $quiz->update($request->all());
             return $this->returnSuccessMessage("updated successfully");
         }
-        return $this->returnError(304, "not Authenticated");
+        return response(['message' => 'not authountcated'], 401);
     }
 
     /**
@@ -98,6 +98,6 @@ class QuizController extends Controller
             $quiz->delete();
             return $this->returnSuccessMessage("destroyed successfully");
         }
-        return $this->returnError(304, "not Authenticated");
+        return response(['message' => 'not authountcated'], 401);
     }
 }

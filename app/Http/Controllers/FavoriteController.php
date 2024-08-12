@@ -2,23 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FavouriteIndexResource;
+use App\Models\Enrollment;
 use App\Models\Favorite;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Traits\GeneralTrait;
 
 class FavoriteController extends Controller
 {
+    use GeneralTrait;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $user_id  =  auth()->user()->id;
-        $user = User::find($user_id);
-        $favourite = $user->favourites;
-        return response([
-            'data' =>  $favourite
-        ], 200);
+        $user = auth()->user()->id;
+        $favourite = Favorite::where('user_id', $user)->get();
+        if (!$favourite) {
+            return response(['message' => 'not found'], 404);
+        }
+        return FavouriteIndexResource::collection($favourite);
     }
 
     /**
@@ -32,21 +36,23 @@ class FavoriteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store($course_id)
     {
-        $request->validate([
-            'course_id'  => 'required|Integer|exists:courses,id',
 
-        ]);
         $user_id  =  auth()->user()->id;
-
+        $enroll = Enrollment::where('user_id', $user_id)->where('course_id', $course_id)->first();
+        if (!$enroll) {
+            return response(['message' => 'not authountcated'], 401);
+        }
+        $favourite = Favorite::where('user_id', $user_id)->where('course_id', $course_id)->first();
+        if ($favourite) {
+            return response(['message' => 'you already add'], 401);
+        }
         Favorite::create([
             'user_id' => $user_id,
-            'course_id' => $request->course_id
+            'course_id' => $course_id
         ]);
-        return response([
-            'message' => 'added to favourite successfuly'
-        ], 200);
+        return $this->returnSuccessMessage("created successfully");
     }
 
     /**
@@ -54,7 +60,11 @@ class FavoriteController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = auth()->user()->id;
+        $favourite = Favorite::findOrFail($id);
+        return new FavouriteIndexResource($favourite);
+
+
     }
 
     /**
@@ -76,20 +86,14 @@ class FavoriteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-
-        $request->validate([
-            'course_id'  => 'required|Integer|exists:courses,id',
-
-        ]);
-        $user_id  =  auth()->user()->id;
-        $favourite = Favorite::where('course_id', $request->course_id)
-            ->where('user_id', $user_id)
-            ->first();
+        $user_auth = auth()->user()->id;
+        $favourite = Favorite::find($id);
+        if ($user_auth != $favourite->user_id) {
+            return response(['message' => 'not authountcated'], 401);
+        }
         $favourite->delete();
-        return response([
-            'message' => 'deleted successfuly'
-        ], 200);
+        return $this->returnSuccessMessage('deleted susseccfully');
     }
 }

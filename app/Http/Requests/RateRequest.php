@@ -11,7 +11,7 @@ class RateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class RateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'value' =>'required|string'
+            'value' => 'sometimes|required|integer|min:1|max:5',
         ];
     }
 }

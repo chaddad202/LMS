@@ -15,7 +15,7 @@ class ReviewShowResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'photo' => $this->user->photo,
+            'photo' => asset('storage/' . str_replace('public/', '', $this->user->photo)),
             'name' => $this->user->name,
             'date' => $this->created_at,
             'comment' => $this->comment

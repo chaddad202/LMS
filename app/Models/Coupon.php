@@ -9,9 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Coupon extends Model
 {
     use HasFactory;
-
-    public function course()
+    protected $fillable = [
+        'user_id',
+        'coupon_code',
+        'discount',
+    ];
+    public function courses()
     {
-        return $this->belongsTo(Course::class);
+        return $this->hasMany(Course::class);
     }
 }

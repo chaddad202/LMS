@@ -47,12 +47,13 @@ class LessonController extends Controller
      */
     public function store(LessonRequest $request, $section_id)
     {
-        $section = Section::find($section_id);
+        $section = Section::findOrFail($section_id);
         $course = $section->course;
         $user = $course->user;
         $user_id = $user->id;
         $authLesson = auth()->user()->id;
-        if ($user_id == $authLesson) {
+        $userauth = User::find($authLesson);
+        if ($user_id == $authLesson || $userauth->hasRole('admin')) {
             $file = '';
             if ($request->hasFile('file')) {
                 $file  = $request->file('file')->store('public/file_course');
@@ -75,7 +76,7 @@ class LessonController extends Controller
      */
     public function show($id)
     {
-        $lesson = Lesson::find($id);
+        $lesson = Lesson::findOrFail($id);
         $section = Section::find($lesson->section_id);
         $course = $section->course;
         $user = $course->user;
@@ -101,13 +102,17 @@ class LessonController extends Controller
      */
     public function update(LessonUpdateRequest $request, $id)
     {
-        $lesson = Lesson::find($id);
+        $lesson = Lesson::findOrFail($id);
         $section = $lesson->section;
         $course = $section->course;
         $user = $course->user;
         $user_id = $user->id;
         $authLesson = auth()->user()->id;
-        if ($user_id == $authLesson) {
+        $userauth = User::find($authLesson);
+        if ($user_id == $authLesson || $userauth->hasRole('admin')) {
+            if ($request->all() === null || count($request->all()) === 0) {
+                return $this->returnError(403, 'request input is empty!');
+            }
             if ($request->has('media')) {
                 Storage::delete($lesson->media);
                 $request->file('media')->store("public/file_course");
@@ -124,13 +129,14 @@ class LessonController extends Controller
      */
     public function destroy($id)
     {
-        $lesson = Lesson::find($id);
+        $lesson = Lesson::findOrFail($id);
         $section = $lesson->section;
         $course = $section->course;
         $user = $course->user;
         $user_id = $user->id;
         $authLesson = auth()->user()->id;
-        if ($user_id == $authLesson) {
+        $userauth = User::find($authLesson);
+        if ($user_id == $authLesson || $userauth->hasRole('admin')) {
             $file = $lesson->file;
             Storage::delete($file);
             $lesson->delete();

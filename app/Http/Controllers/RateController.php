@@ -8,6 +8,8 @@ use App\Models\Rate;
 use Illuminate\Http\Request;
 use App\Traits\GeneralTrait;
 use App\Models\Course;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class RateController extends Controller
 {
@@ -31,21 +33,31 @@ class RateController extends Controller
     public function store(RateRequest $request, $course_id)
     {
         $user_id = auth()->user()->id;
+        $user = User::find($user_id);
+
+        $isEnrolled = $user->enrollments()->where('course_id', $course_id)->exists();
+
+        if (!$isEnrolled) {
+            return $this->returnError(304, 'You should enroll first');
+        }
+
+        $existingRate = Rate::where('user_id', $user_id)
+            ->where('course_id', $course_id)
+            ->first();
+
+        if ($existingRate) {
+            return $this->returnError(304, 'You have already rated this course');
+        }
+
         Rate::create([
             'user_id' => $user_id,
             'course_id' => $course_id,
             'value' => $request->value
         ]);
-        $course = course::findOrFail($course_id);
-        $course->number_of_rating += 1;
-        $rating =  Rate::where('course_id', $course_id)->get();
-        $value = 0;
-        foreach ($rating->value as $ratings) {
-            $value += $ratings;
-        }
-        $course->rating = $value / $course->number_of_rating;
-        return $this->returnSuccessMessage('created successfully');
+
+        return $this->returnSuccessMessage('Created successfully');
     }
+
 
     /**
      * Display the specified resource.
@@ -54,16 +66,40 @@ class RateController extends Controller
     {
         $rate = [];
         if ($id == 1) {
-            $rate = course::where('rating' >= 4.5)->get();
+            $rate = Course::with(['user'])
+                ->leftJoin('rates', 'courses.id', '=', 'rates.course_id')
+                ->select('courses.*', DB::raw('AVG(rates.value) as average_rating'))
+                ->groupBy('courses.id', 'courses.title', 'courses.photo', 'courses.category_id', 'courses.description', 'courses.coupon_id', 'courses.price', 'courses.level', 'courses.user_id', 'courses.course_duration', 'courses.created_at', 'courses.updated_at')
+                ->having(DB::raw('AVG(rates.value)'), '>=', 4.5)
+                ->orderByDesc(DB::raw('AVG(rates.value)'))->get();
         } else  if ($id == 2) {
-            $rate = course::where('rating' >= 4.0)->get();
+            $rate =  Course::with(['user'])
+                ->leftJoin('rates', 'courses.id', '=', 'rates.course_id')
+                ->select('courses.*', DB::raw('AVG(rates.value) as average_rating'))
+                ->groupBy('courses.id', 'courses.title', 'courses.photo', 'courses.category_id', 'courses.description', 'courses.coupon_id', 'courses.price', 'courses.level', 'courses.user_id', 'courses.course_duration', 'courses.created_at', 'courses.updated_at')
+                ->having(DB::raw('AVG(rates.value)'), '>=', 4.0)
+                ->orderByDesc(DB::raw('AVG(rates.value)'))->get();
         } else  if ($id == 3) {
-            $rate = course::where('rating' >= 3.5)->get();
-        } else  if ($id == 2) {
-            $rate = course::where('rating' >= 3.0)->get();
+            $rate =  Course::with(['user'])
+                ->leftJoin('rates', 'courses.id', '=', 'rates.course_id')
+                ->select('courses.*', DB::raw('AVG(rates.value) as average_rating'))
+                ->groupBy('courses.id', 'courses.title', 'courses.photo', 'courses.category_id', 'courses.description', 'courses.coupon_id', 'courses.price', 'courses.level', 'courses.user_id', 'courses.course_duration', 'courses.created_at', 'courses.updated_at')
+                ->having(DB::raw('AVG(rates.value)'), '>=', 3.5)
+                ->orderByDesc(DB::raw('AVG(rates.value)'))->get();
+        } else  if ($id == 4) {
+            $rate =  Course::with(['user'])
+                ->leftJoin('rates', 'courses.id', '=', 'rates.course_id')
+                ->select('courses.*', DB::raw('AVG(rates.value) as average_rating'))
+                ->groupBy('courses.id', 'courses.title', 'courses.photo', 'courses.category_id', 'courses.description', 'courses.coupon_id', 'courses.price', 'courses.level', 'courses.user_id', 'courses.course_duration', 'courses.created_at', 'courses.updated_at')
+                ->having(DB::raw('AVG(rates.value)'), '>=', 3.0)
+                ->orderByDesc(DB::raw('AVG(rates.value)'))->get();
         }
-        return FilteringResource::collection($rate);
-    }
+        $numberOfCourses = $rate->count();
+
+        return response()->json([
+            'number_courses' => $numberOfCourses,
+            'courses' => FilteringResource::collection($rate),
+        ]);    }
 
     /**
      * Show the form for editing the specified resource.
@@ -80,14 +116,6 @@ class RateController extends Controller
     {
         $rate = Rate::find($rate_id);
         $rate->update($request->all());
-        $course = course::findOrFail($rate->course_id);
-        $course->number_of_rating += 1;
-        $rating =  Rate::where('course_id', $rate->course_id)->get();
-        $value = 0;
-        foreach ($rating->value as $ratings) {
-            $value += $ratings;
-        }
-        $course->rating = $value / $course->number_of_rating;
         return $this->returnSuccessMessage('updated successfully');
     }
 

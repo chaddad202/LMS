@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('section_id');
             $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
             $table->string('name');
-            $table->integer('num_of_question')->nullable();
+            $table->integer('num_of_question');
             $table->integer('mark')->nullable();
             $table->timestamps();
         });

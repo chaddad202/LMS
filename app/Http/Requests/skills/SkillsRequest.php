@@ -23,7 +23,10 @@ class SkillsRequest extends FormRequest
     {
         return [
             'title' => 'required|unique:skills,title|string',
-            'maximunPoint' => 'required|Integer',
+            'maximunBeginner' => 'required|Integer|max:25|min:0',
+            'maximunIntemediate' => 'required|Integer|max:75|min:26',
+            'maximunAdvanced' => 'required|Integer|max:100|min:76',
+
         ];
     }
 }

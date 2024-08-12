@@ -20,6 +20,6 @@ class Category extends Model
     public function courses()
     {
 
-        return $this->belongsToMany(Course::class, 'course_categories');
+        return $this->hasMany(Course::class);
     }
 }

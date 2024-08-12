@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('skills', function (Blueprint $table) {
             $table->id();
             $table->string('title')->unique();
-            $table->integer('maximunPoint')->nullable();
+            $table->integer('maximunBeginner');
+            $table->integer('maximunIntemediate');
+            $table->integer('maximunAdvanced');
             $table->timestamps();
         });
     }

@@ -22,8 +22,11 @@ class SkillsUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'unique:skills,title||string',
-            'maximunPoint' => 'Integer',
+            'title' => 'sometimes|required|unique:skills,title|string',
+            'maximunBeginner' => 'sometimes|required|Integer|max:25|min:0',
+            'maximunIntemediate' => 'sometimes|required|Integer|max:75|min:26',
+            'maximunAdvanced' => 'sometimes|required|Integer|max:100|min:76',
+
         ];
     }
 }

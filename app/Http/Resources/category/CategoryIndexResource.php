@@ -17,8 +17,8 @@ class CategoryIndexResource extends JsonResource
         return [
             'category' => [
                 'name' =>  $this->name,
-                'photo'  => $this->photo,
-                'Availble course' => $this->getavailble()
+                'photo'  => asset('storage/' . str_replace('public/', '', $this->photo)),
+                'Availble_course' => $this->getavailble()
             ],
 
         ];

@@ -22,10 +22,10 @@ class LessonUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'string',
-            'description' => 'string',
-            'file' => 'file',
-            'lesson_duration' => 'timezone'
+            'title' => 'sometimes|required|string',
+            'description' => 'sometimes|required|string',
+            'file' => 'sometimes|required|file',
+            'lesson_duration' => ['regex:/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/'], // التحقق من الوقت بصيغة HH:mm
 
         ];
     }

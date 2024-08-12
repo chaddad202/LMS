@@ -8,11 +8,14 @@ use App\Http\Requests\category\CategoryUpdateRequest;
 use App\Http\Resources\category\CategoryIndexResource;
 use App\Http\Resources\category\CategoryShowResource;
 use App\Models\Category;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Models\Course_category;
 use App\Traits\GeneralTrait;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Constraint\IsEmpty;
+
+use function Laravel\Prompts\select;
 
 class CategoryController extends Controller
 {
@@ -40,6 +43,7 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
+
         if ($request->hasFile('photo')) {
             $photo  = $request->file('photo')->store('public/images');
         }
@@ -69,15 +73,18 @@ class CategoryController extends Controller
      */
     public function update(CategoryUpdateRequest $request, $id)
     {
-        if ($request->empty) {
+        $category = Category::findOrFail($id);
+        if ($request->all() === null || count($request->all()) === 0) {
             return $this->returnError(304, 'nothing to update');
         }
-        $category = Category::findOrFail($id);
         if ($request->hasFile('photo')) {
             Storage::delete($category->photo);
             $photo  = $request->file('photo')->store('public/images');
+            $category->update(['photo'=> $photo]);
         }
-        $category->update($request->all());
+        if ($request->has('name')) {
+            $category->update(['name'=> $request->name]);
+        }
         return $this->returnSuccessMessage(' updated succussefully');
     }
 

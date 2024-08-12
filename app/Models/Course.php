@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
 
 class Course extends Model
 {
@@ -18,9 +19,8 @@ class Course extends Model
         'level',
         'price',
         'course_duration',
-        'number_of_student',
-        'rating',
-        'number_of_rating',
+        'category_id',
+        'coupon_id'
 
     ];
 
@@ -39,9 +39,9 @@ class Course extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function categories()
+    public function category()
     {
-        return $this->belongsToMany(Category::class, 'course_categories');
+        return $this->belongsTo(Category::class);
     }
 
     public function learning_paths()
@@ -52,6 +52,10 @@ class Course extends Model
     public function skills()
     {
         return $this->belongsToMany(Skills::class, 'course_skills');
+    }
+    public function gifts()
+    {
+        return $this->hasMany(Gift::class);
     }
 
     public function enrollments()
@@ -66,16 +70,16 @@ class Course extends Model
 
     public function ratings()
     {
-        return $this->hasMany(Rating::class);
+        return $this->hasMany(Rate::class);
     }
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
 
-    public function coupons()
+    public function coupon()
     {
-        return $this->hasMany(Coupon::class);
+        return $this->belongsTo(Coupon::class);
     }
 
     public function sections()
@@ -86,9 +90,9 @@ class Course extends Model
     {
         return $this->hasMany(Rate::class);
     }
-    public function informations()
+    public function Gain_prequists()
     {
-        return $this->hasMany(Information::class);
+        return $this->hasMany(Gain_prequist::class);
     }
 
     public function progress_students()
@@ -100,4 +104,11 @@ class Course extends Model
     {
         return $this->hasMany(Certificate::class);
     }
+    public function getAverageRatingAttribute()
+    {
+        return Cache::remember("course_{$this->id}_rating", now()->addMinutes(10), function () {
+            return $this->ratings()->avg('value');
+        });
+    }
+
 }

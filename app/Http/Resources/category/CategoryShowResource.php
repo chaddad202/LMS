@@ -16,6 +16,7 @@ class CategoryShowResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'course_number' => $this->getnumenro(),
             'courses' => $this->getcourse()
         ];
     }
@@ -25,7 +26,7 @@ class CategoryShowResource extends JsonResource
         foreach ($this->courses as $course) {
             $user = User::find($course->user_id);
             $res[] = [
-                'photo' => $course->photo,
+                'photo' => asset('storage/' . str_replace('public/', '', $course->photo)),
                 'title_course' => $course->title,
                 'Rating' => $course->rating,
                 'price' => $course->price,
@@ -35,5 +36,9 @@ class CategoryShowResource extends JsonResource
             ];
         }
         return $res;
+    }
+    public function getnumenro()
+    {
+        return $this->courses()->count();
     }
 }

@@ -25,7 +25,8 @@ class   LessonRequest extends FormRequest
             'title' => 'required|string',
             'description' => 'required|string',
             'file' => 'required|file',
-            'lesson_duration' => 'timezone'
+            'lesson_duration' => [ 'regex:/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/'], // التحقق من الوقت بصيغة HH:mm
+
 
         ];
     }

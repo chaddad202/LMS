@@ -13,10 +13,11 @@ class Section extends Model
         'user_id',
         'course_id',
         'title',
+        'section_duration'
     ];
-    public function quiz()
+    public function quizzes()
     {
-        return $this->hasOne(Quiz::class);
+        return $this->hasMany(Quiz::class);
     }
 
     public function lessons()
