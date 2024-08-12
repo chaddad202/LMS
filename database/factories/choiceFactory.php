@@ -20,7 +20,7 @@ class choiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'question_id' => Question::factory()->optional(), // Creates a new question and assigns its ID to question_id or leaves it null
+            'question_id' => Question::factory(), // Creates a new question and assigns its ID to question_id or leaves it null
             'choice_text' => $this->faker->sentence(), // Generates a random choice text
             'isAnswer' => $this->faker->boolean(), // Randomly sets whether the choice is the correct answer
         ];

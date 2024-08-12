@@ -15,8 +15,9 @@ class SectionShowResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'title' => $this->title,
-            'section_duration' => $this->section_duration,
+            'sectionDuration' => $this->section_duration,
             'lessons' => $this->lessons->pluck('title'),
         ];
     }

@@ -15,7 +15,8 @@ class Q_aIndexResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user_name' => $this->user->name,
+            'id' => $this->id,
+            'userName' => $this->user->name,
             'comment' => $this->comment,
         ];
     }

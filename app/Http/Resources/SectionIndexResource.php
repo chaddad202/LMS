@@ -15,7 +15,8 @@ class SectionIndexResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'section_name' => $this->getsection(),
+            'id' => $this->id,
+            'sectionName' => $this->getsection(),
         ];
     }
     public function getsection()

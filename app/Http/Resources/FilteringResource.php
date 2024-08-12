@@ -16,17 +16,17 @@ class FilteringResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'courses' =>
 
-            [
-                'photo'  => asset('storage/' . str_replace('public/', '', $this->photo)),
-                'title_course' => $this->title,
-                'average_rating' => $this->average_rating,
-                'price' => $this->price,
-                'level' => $this->level,
-                'instructor' => $this->user->name,
-                'course_duration' => $this->course_duration,
-            ]
+
+            'id' => $this->id,
+            'photo'  => asset('storage/' . str_replace('public/', '', $this->photo)),
+            'titleCourse' => $this->title,
+            'average_rating' => $this->average_rating,
+            'price' => $this->price,
+            'level' => $this->level,
+            'instructor' => $this->user->name,
+            'courseDuration' => $this->course_duration,
+
 
 
         ];

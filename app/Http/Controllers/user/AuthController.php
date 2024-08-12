@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use App\Traits\GeneralTrait;
 use App\Http\Requests\user\UserRequest;
+use App\Http\Resources\UserIndexResource;
 use App\Http\Resources\UserShowResource;
 use App\Models\Customer;
 use App\Models\role_user;
@@ -99,5 +100,10 @@ class AuthController extends Controller
     {
         $user = User::findOrFail($id);
         return new UserShowResource($user);
+    }
+    public function index($id)
+    {
+        $user = User::all();
+        return new UserIndexResource($user);
     }
 }

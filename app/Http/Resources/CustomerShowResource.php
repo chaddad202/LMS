@@ -15,7 +15,8 @@ class CustomerShowResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user_name' => $this->user->name,
+            'id' => $this->id,
+            'userName' => $this->user->name,
             'photo' => $this->photo,
             'profession' => $this->profession,
             'description' => $this->description,
