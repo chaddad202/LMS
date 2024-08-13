@@ -38,7 +38,8 @@ class RateController extends Controller
         $isEnrolled = $user->enrollments()->where('course_id', $course_id)->exists();
 
         if (!$isEnrolled) {
-            return $this->returnError(304, 'You should enroll first');
+            return response(['message' => 'You should enroll first'], 403);
+
         }
 
         $existingRate = Rate::where('user_id', $user_id)
@@ -46,7 +47,8 @@ class RateController extends Controller
             ->first();
 
         if ($existingRate) {
-            return $this->returnError(304, 'You have already rated this course');
+            return response(['message' => 'You have already rated this course'], 403);
+
         }
 
         Rate::create([

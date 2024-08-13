@@ -26,9 +26,32 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $courses = Course::all();
+        $query = Course::query();
+
+        if ($request->has('category')) {
+            $query->where('category_id', $request->input('category'));
+        }
+
+        if ($request->has('level')) {
+            $query->where('level', strtolower($request->input('level')));
+        }
+
+        if ($request->has('rating')) {
+            $rating = $request->input('rating');
+            $query->whereHas('ratings', function ($q) use ($rating) {
+                $q->havingRaw('AVG(rating) >= ?', [$rating]);
+            });
+        }
+
+        if ($request->has('price')) {
+            $query->where('price', '<=', $request->input('price'));
+        }
+
+        $courses = $query->get();
+
+
         return CourseIndexResource::collection($courses);
     }
 
@@ -148,7 +171,7 @@ class CourseController extends Controller
         }
         return response(['message' => 'not authountcated'], 401);
     }
-    
+
     public function search(Request $request)
     {
         $searchcourse = $request->validate(['title' => 'required']);

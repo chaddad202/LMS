@@ -130,7 +130,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/category_index', [CategoryController::class, 'index']);
-Route::get('/course_index', [CourseController::class, 'index']);
+Route::post('/course_index', [CourseController::class, 'index']);
 Route::get('/course_show/{id}', [CourseController::class, 'show']);
 Route::post('/course_search', [CourseController::class, 'search']);
 Route::get('/teacher_courses/{user_id}', [CourseController::class, 'teacher_courses']);
@@ -159,4 +159,3 @@ Route::get('/category_explore', [FilterControler::class, 'category_explore']);
 Route::get('/review_explore', [FilterControler::class, 'review_explore']);
 Route::get('/profile_show/{id}', [CustomerController::class, 'show']);
 Route::get('/user_show/{id}', [AuthController::class, 'show']);
-// Route::get('/related_courses/{course_id}', [FilterControler::class, 'related_courses']);
