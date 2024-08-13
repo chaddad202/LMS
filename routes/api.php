@@ -17,14 +17,17 @@ use App\Http\Controllers\Course\Q_aController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\Course\SkillsController;
+use App\Http\Controllers\Course_skillsController;
 use App\Http\Controllers\user\CustomerController;
 use App\Http\Controllers\FilterControler;
+use App\Http\Controllers\Gain_prequistController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\user\GiftController;
 use App\Http\Controllers\user\OrderController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\ReviewController;
 use App\Models\Customer;
+use App\Models\Gain_prequist;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,11 +51,17 @@ Route::post('/register_Student', [AuthController::class, 'register_Student']);
 
 
 Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function () {
-    Route::post('/profile_update/{id}',[CustomerController::class,'update']);
-    Route::get('/profile_destroy/{id}',[CustomerController::class,'destroy']);
+    Route::post('/profile_update/{id}', [CustomerController::class, 'update']);
+    Route::get('/profile_destroy/{id}', [CustomerController::class, 'destroy']);
     Route::post('/course_store', [CourseController::class, 'store']);
     Route::post('/course_update/{id}', [CourseController::class, 'update']);
     Route::delete('/course_destroy/{id}', [CourseController::class, 'destroy']);
+    Route::post('/course_skills_store/{course_id}', [Course_skillsController::class, 'store']);
+    Route::post('/course_skills_update/{id}', [Course_skillsController::class, 'update']);
+    Route::delete('/course_skills_destroy/{id}', [Course_skillsController::class, 'destroy']);
+    Route::post('/Gain_prequist_store/{course_id}', [Gain_prequistController::class, 'store']);
+    Route::post('/Gain_prequist_update/{id}', [Gain_prequistController::class, 'update']);
+    Route::delete('/Gain_prequist_destroy/{id}', [Gain_prequistController::class, 'destroy']);
     Route::get('/showEnrollment', [CourseController::class, 'showEnrollment']);
     Route::post('/section_store/{course_id}', [SectionController::class, 'store']);
     Route::post('/section_update/{id}', [SectionController::class, 'update']);
@@ -91,8 +100,6 @@ Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function ()
     Route::get('/note_show/{id}', [NoteController::class, 'show']);
     Route::post('/order_store', [OrderController::class, 'store']);
     Route::post('/gift_store/{course_id}', [GiftController::class, 'store']);
-
-
 });
 Route::group(['middleware' => ['checkAdminRole', 'auth:sanctum']], function () {
     Route::post('/enrollment_destroy/{id}', [EnrollmentController::class, 'destroy']);
@@ -118,7 +125,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/review_store/{course_id}', [ReviewController::class, 'store']);
     Route::post('/review_update/{review_id}', [ReviewController::class, 'update']);
     Route::delete('/review_destroy/{review_id}', [ReviewController::class, 'destroy']);
-    Route::get('/q_a_index/{lesson_id}',[Q_aController::class,'index']);
+    Route::get('/q_a_index/{lesson_id}', [Q_aController::class, 'index']);
 });
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -145,12 +152,11 @@ Route::get('/price_show/{id}', [FilterControler::class, 'price_show']);
 Route::get('/Sort_by/{id}', [FilterControler::class, 'Sort_by']);
 Route::post('/category_show/{id}', [CategoryController::class, 'show']);
 
-
 ////////////////explore////////////////////////////////
 
 Route::get('/course_explore', [FilterControler::class, 'course_explore']);
 Route::get('/category_explore', [FilterControler::class, 'category_explore']);
 Route::get('/review_explore', [FilterControler::class, 'review_explore']);
-Route::get('/profile_show/{id}',[CustomerController::class,'show']);
-Route::get('/user_show/{id}',[AuthController::class,'show']);
+Route::get('/profile_show/{id}', [CustomerController::class, 'show']);
+Route::get('/user_show/{id}', [AuthController::class, 'show']);
 // Route::get('/related_courses/{course_id}', [FilterControler::class, 'related_courses']);

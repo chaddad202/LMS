@@ -58,6 +58,7 @@ class CourseController extends Controller
             'level' => $request->level,
             'category_id' => $request->category_id,
             'coupon_id' => $request->coupon_id,
+            'type' => 'draft'
         ];
         $data['user_id'] = $user;
         $photo  = '';
@@ -65,37 +66,7 @@ class CourseController extends Controller
             $photo  = $request->file('photo')->store('public/images');
         }
         $data['photo'] = $photo;
-        $course = Course::create($data);
-        $course_level = $request->level;
-        foreach ($request->skills as $skill) {
-            $s = Skills::where('id', $skill['id'])->first();
-            $point_max = 0;
-            $point_min = 0;
-            if ($course_level == 'beginner') {
-                $point_max = $s->maximunBeginner;
-            } else if ($course_level == 'intemediate') {
-                $point_max = $s->maximunIntemediate;
-                $point_min = 26;
-            } else {
-                $point_max = $s->maximunAdvanced;
-                $point_min = 76;
-            }
-            if ($skill['point'] > $point_max) {
-                return $this->returnError(304, " the maximun for $s->title = $point_max");
-            } else if ($skill['point'] < $point_min) {
-                return $this->returnError(304, " the min for $s->title = $point_min");
-            }
-            $course->skills()->attach($skill['id'], ['point' => $skill['point']], ['status' => $skill['status']]);
-        }
-        foreach ($request->gain_prequist as $gain_prequists) {
-            Gain_prequist::create([
-                'text' => $gain_prequists['text'],
-                'status' => $gain_prequists['status'],
-                'course_id' => $course->id
-            ]);
-        }
-
-
+        Course::create($data);
         return $this->returnSuccessMessage('created successfully');
     }
 
@@ -177,6 +148,7 @@ class CourseController extends Controller
         }
         return response(['message' => 'not authountcated'], 401);
     }
+    
     public function search(Request $request)
     {
         $searchcourse = $request->validate(['title' => 'required']);

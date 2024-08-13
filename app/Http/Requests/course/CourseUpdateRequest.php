@@ -25,9 +25,12 @@ class CourseUpdateRequest extends FormRequest
             'category_id' => 'Integer|exists:categories,id',
             'coupon_id' => 'Integer|exists:coupons,id',
             'title' => 'string',
+            'level' => 'in:beginner,intemediate,advanced',
             'description' => 'string',
             'photo' => 'file',
             'price'  => 'Integer',
+            'course_duration' => 'timezone',
+            'type'=>'in:draft,publish',
 
         ];
     }

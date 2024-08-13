@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CourseSkillRequest;
-use App\Http\Requests\CourseSkillUpdateRequest;
-use Illuminate\Http\Request;
+use App\Http\Requests\Gain_prequistRequest;
+use App\Http\Requests\Gain_prequistUpdateRequest;
 use App\Models\Course;
-use App\Models\Course_skills;
-use App\Traits\GeneralTrait;
+use App\Models\Gain_prequist;
+use Illuminate\Http\Request;
 
-class Course_skillsController extends Controller
+class Gain_prequistController extends Controller
 {
-    use GeneralTrait;
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         //
@@ -31,17 +26,17 @@ class Course_skillsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CourseSkillRequest $request, $course_id)
+    public function store(Gain_prequistRequest $request, $course_id)
     {
         $course = Course::find($course_id);
         $user_auth = auth()->user()->id;
         if ($course->user_id != $user_auth) {
             return response(['message' => 'not authountcated'], 401);
         }
-        Course_skills::create([
+        Gain_prequist::create([
             'user_id' => $user_auth,
             'course_id' => $course_id,
-            'point' => $request->point,
+            'text' => $request->text,
             'status' => $request->status
         ]);
         return $this->returnSuccessMessage('created successfully');
@@ -66,31 +61,31 @@ class Course_skillsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CourseSkillUpdateRequest $request,  $id)
+    public function update(Gain_prequistUpdateRequest $request,  $id)
     {
-        $course_skill = Course_skills::find($id);
+        $gain_prequist = Gain_prequist::find($id);
         $user_auth = auth()->user()->id;
-        if ($course_skill->user_id != $user_auth) {
+        if ($gain_prequist->user_id != $user_auth) {
             return response(['message' => 'not authountcated'], 401);
         }
         if ($request->all() === null || count($request->all()) === 0) {
             return response(['message' => 'request is empty'], 403);
         }
-        $course_skill->update($request->all());
+        $gain_prequist->update($request->all());
         return $this->returnSuccessMessage('updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy(string $id)
     {
-        $course_skill = Course_skills::find($id);
+        $gain_prequist = Gain_prequist::find($id);
         $user_auth = auth()->user()->id;
-        if ($course_skill->user_id != $user_auth) {
+        if ($gain_prequist->user_id != $user_auth) {
             return response(['message' => 'not authountcated'], 401);
         }
-        $course_skill->delete();
+        $gain_prequist->delete();
         return $this->returnSuccessMessage('deleted successfully');
     }
 }

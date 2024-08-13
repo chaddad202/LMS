@@ -86,7 +86,7 @@ class FilterControler extends Controller
     public function category_explore()
     {
         $category = Category::withCount('courses')->orderBy('courses_count', 'desc')->take(12)->get();
-        
+
         return CategoryIndexResource::collection($category);
     }
     public function review_explore()
@@ -94,4 +94,5 @@ class FilterControler extends Controller
         $review = Review::take(12)->get();
         return CategoryIndexResource::collection($review);
     }
+   
 }
