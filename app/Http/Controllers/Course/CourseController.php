@@ -46,7 +46,15 @@ class CourseController extends Controller
         }
 
         if ($request->has('price')) {
-            $query->where('price', '<=', $request->input('price'));
+            $price = strtolower($request->input('price'));
+            if ($price === 'free') {
+                $query->where(function ($q) {
+                    $q->where('price', 0)
+                    ->orWhereNull('price');
+                });
+            } elseif ($price === 'paid') {
+                $query->where('price', '>', 0);
+            }
         }
 
         $courses = $query->get();
