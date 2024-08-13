@@ -150,7 +150,7 @@ Route::get('/Rate_show/{id}', [RateController::class, 'show']);
 Route::get('/level_show/{id}', [FilterControler::class, 'level_show']);
 Route::get('/price_show/{id}', [FilterControler::class, 'price_show']);
 Route::get('/Sort_by/{id}', [FilterControler::class, 'Sort_by']);
-Route::post('/category_show/{id}', [CategoryController::class, 'show']);
+Route::get('/category_show/{id}', [CategoryController::class, 'show']);
 
 ////////////////explore////////////////////////////////
 
