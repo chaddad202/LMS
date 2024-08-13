@@ -15,10 +15,10 @@ class CategoryIndexResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-           'id'=> $this->id ,
-                'name' =>  $this->name,
-                'photo'  => asset('storage/' . str_replace('public/', '', $this->photo)),
-                'Availble_course' => $this->getavailble()
+            'id' => $this->id,
+            'name' =>  $this->name,
+            'photo'  => asset('storage/' . str_replace('public/', '', $this->photo)),
+            'availbleCourse' => $this->getavailble()
 
 
         ];

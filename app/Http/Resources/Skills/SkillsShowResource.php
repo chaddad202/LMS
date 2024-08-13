@@ -17,9 +17,10 @@ class SkillsShowResource extends JsonResource
         return [
             'id'=>$this->id,
             'title' => $this->title,
-            'maximunBeginner' => $this->maximunBeginner,
-            'maximunIntemediate' => $this->maximunIntemediate,
-            'maximunAdvanced' => $this->maximunAdvanced,
+            'maximumBeginner' => $this->maximunBeginner,
+            'maximumIntermediate' => $this->maximunIntemediate,
+            'maximumAdvanced' => $this->maximunAdvanced,
+
 
         ];
     }
