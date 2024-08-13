@@ -121,14 +121,7 @@ class EnrollmentController extends Controller
             $user->wallet -= $price;
             $user->save();
 
-            // Add skills to the user
-            foreach ($course->skills as $skill) {
-                User_skill::create([
-                    'user_id' => $user_id,
-                    'skills_id' => $skill->id,
-                    'point' => $skill->point
-                ]);
-            }
+           
 
             return $this->returnSuccessMessage('Enrolled successfully.');
         }
