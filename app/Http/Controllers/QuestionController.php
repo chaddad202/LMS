@@ -49,7 +49,6 @@ class QuestionController extends Controller
                 ]);
             }
             return $this->returnSuccessMessage(" created succesfully");
-
         }
     }
 

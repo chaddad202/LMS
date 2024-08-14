@@ -88,8 +88,7 @@ Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function ()
     Route::get('/favorite_index', [FavoriteController::class, 'index']);
     Route::get('/favorite_show/{id}', [FavoriteController::class, 'show']);
     Route::delete('/favorite_destroy/{id}', [FavoriteController::class, 'destroy']);
-    Route::post('/Quiz_show', [QuizController::class, 'show']);
-    Route::post('/answer_store', [AnswerController::class, 'store']);
+    Route::post('/answer_store/{quiz_id}', [AnswerController::class, 'store']);
     Route::post('/my_mark_show', [AnswerController::class, 'my_mark']);
     Route::post('/rate_store/{course_id}', [RateController::class, 'store']);
     Route::post('/rate_update/{rate_id}', [RateController::class, 'update']);
@@ -126,8 +125,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/review_update/{review_id}', [ReviewController::class, 'update']);
     Route::delete('/review_destroy/{review_id}', [ReviewController::class, 'destroy']);
     Route::get('/q_a_index/{lesson_id}', [Q_aController::class, 'index']);
+    Route::get('/my_profile_show/{id}', [CustomerController::class, 'my_profile']);
 });
 
+Route::get('/Quiz_show/{id}', [QuizController::class, 'show']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/category_index', [CategoryController::class, 'index']);
 Route::post('/course_index', [CourseController::class, 'index']);

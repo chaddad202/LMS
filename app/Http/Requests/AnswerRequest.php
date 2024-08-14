@@ -22,9 +22,10 @@ class AnswerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'quiz_id' => 'required|Integer|exists:quizzes,id',
-            'question_id' => 'required|Integer|exists:questions,id',
-            'choice_id' => 'required|Integer|exists:choices,id',
+            'question' => 'required|array',
+            'question.*.id' => 'required|Integer|exists:quizzes,id',
+            'question.*.choices' => 'required|array',
+            'question.*.choices.*.id' => 'required|Integer|exists:choices,id',
         ];
     }
 }

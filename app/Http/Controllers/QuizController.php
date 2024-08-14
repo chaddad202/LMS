@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\QuizRequest;
 use App\Http\Requests\enrollment\QuizUpdateRequest;
+use App\Http\Resources\QuizIndexResourse;
 use App\Models\Choice;
 use App\Models\Q_C;
 use App\Models\Quiz;
@@ -43,7 +44,8 @@ class QuizController extends Controller
         if ($user_id == $authQuiz) {
             Quiz::create([
                 'name' => $request->name,
-                'section_id' => $section_id
+                'section_id' => $section_id,
+                'num_of_question' => $request->num_of_question
             ]);
             return $this->returnSuccessMessage("created successfully");
         }
@@ -53,8 +55,10 @@ class QuizController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function show($id)
     {
+        $quiz = Quiz::find($id);
+        return new QuizIndexResourse($quiz);
     }
 
     /**

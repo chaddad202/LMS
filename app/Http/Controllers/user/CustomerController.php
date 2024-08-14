@@ -5,6 +5,8 @@ namespace App\Http\Controllers\user;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\user\TeacherUpdateRequest;
 use App\Http\Resources\CustomerShowResource;
+use App\Http\Resources\ProfileCustomerResource;
+use App\Http\Resources\UserShowResource;
 use App\Models\Customer;
 use App\Models\user;
 use Illuminate\Http\Request;
@@ -43,11 +45,10 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
-        $customer=Customer::findOrFail($id);
+        $customer = Customer::findOrFail($id);
         return new CustomerShowResource($customer);
-
     }
 
     /**
@@ -118,15 +119,12 @@ class CustomerController extends Controller
 
         return $this->returnError(403, 'Not authenticated');
     }
-    // public function search(Request $request)
-    // {
-    //     $searchteacher = $request->validate(['name' => 'required']);
-    //     $user = User::where('name', 'like', '%' . $searchteacher['name'] . '%')->get();
-    //     if (!count($user) == 0) {
-    //         return $user;
-    //     } else {
-    //         return response(["message" => "medic not found"]);
-    //     }
-    // }
+    public function my_profile()
+    {
+        $user = User::find(auth()->user()->id);
+        if ($user->customer) {
+            return new ProfileCustomerResource($user);
+        }
+        return new UserShowResource($user);
     }
-
+}
