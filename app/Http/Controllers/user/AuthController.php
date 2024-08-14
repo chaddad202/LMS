@@ -41,7 +41,7 @@ class AuthController extends Controller
 
     public function register_Student(UserRequest $request)
     {
-        
+
 
         $data = $request->all();
         $data['password'] = Hash::make($request->password);
@@ -102,7 +102,7 @@ class AuthController extends Controller
         $user = User::findOrFail($id);
         return new UserShowResource($user);
     }
-    public function index($id)
+    public function index()
     {
         $user = User::all();
         return new UserIndexResource($user);
