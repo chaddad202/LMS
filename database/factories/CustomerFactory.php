@@ -22,7 +22,7 @@ class CustomerFactory extends Factory
         return [
             'user_id' => User::factory(), // Creates a new user and assigns its ID to user_id
             'photo' => $this->faker->imageUrl(640, 480, 'people', true), // Generates a fake image URL
-            'description' => $this->faker->paragraph(), // Generates a random paragraph for the description
+            'description' => $this->faker->sentence(), // Generates a random paragraph for the description
             'profession' => $this->faker->jobTitle(), // Generates a random job title for the profession
         ];
     }
