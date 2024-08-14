@@ -115,8 +115,14 @@ class AuthController extends Controller
     public function destroy($id)
     {
         $user = User::find($id);
-        $user->delete();
+
+        if ($user) {
+            $user->syncRoles([]);
+            $user->syncPermissions([]);
+            $user->delete();
+
 
         return $this->returnSuccessMessage('deleted successfully');
     }
+}
 }

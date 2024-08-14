@@ -52,7 +52,6 @@ Route::post('/register_Student', [AuthController::class, 'register_Student']);
 
 
 Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function () {
-    Route::post('/profile_update/{id}', [CustomerController::class, 'update']);
     Route::get('/profile_destroy/{id}', [CustomerController::class, 'destroy']);
     Route::post('/course_store', [CourseController::class, 'store']);
     Route::post('/course_update/{id}', [CourseController::class, 'update']);
@@ -102,6 +101,7 @@ Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function ()
     Route::post('/gift_store/{course_id}', [GiftController::class, 'store']);
 });
 Route::group(['middleware' => ['checkAdminRole', 'auth:sanctum']], function () {
+    Route::delete('/user_destroy/{id}', [AuthController::class, 'destroy']);
     Route::post('/enrollment_destroy/{id}', [EnrollmentController::class, 'destroy']);
     Route::post('/skill_store', [SkillsController::class, 'store']);
     Route::post('/skill_update/{id}', [SkillsController::class, 'update']);
@@ -129,8 +129,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/my_profile_show', [CustomerController::class, 'my_profile']);
     Route::post('email_update',[AccountController::class, 'email_update']);
     Route::post('password_update',[AccountController::class, 'password_update']);
-    Route::post('account_delete',[AccountController::class, 'account_delete']);
-    Route::post('update_profile',[AccountController::class, 'update_profile']);
+    Route::delete('account_delete',[AccountController::class, 'account_delete']);
+    Route::post('profile_update',[AccountController::class, 'profile_update']);
 });
 
 Route::get('/Quiz_show/{id}', [QuizController::class, 'show']);
@@ -166,4 +166,3 @@ Route::get('/review_explore', [FilterControler::class, 'review_explore']);
 Route::get('/profile_show/{id}', [CustomerController::class, 'show']);
 Route::get('/user_show/{id}', [AuthController::class, 'show']);
 Route::get('/user_index', [AuthController::class, 'index']);
-Route::get('/user_delete/{id}', [AuthController::class, 'destroy']);

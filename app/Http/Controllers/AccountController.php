@@ -48,7 +48,7 @@ class AccountController extends Controller
         $user->delete();
         return $this->returnSuccessMessage('deleted successfully');
     }
-    public function update_profile(ProfileUpdateRequest $request)
+    public function profile_update(ProfileUpdateRequest $request)
     {
         $user = User::findOrFail(auth()->user()->id);
         $customer = $user->customer;
@@ -56,7 +56,12 @@ class AccountController extends Controller
             if (!($request->has('photo') & $request->has('profession') & $request->has('description'))) {
                 return response(['message' => 'please isert all information'], 401);
             }
-            Customer::create($request->all());
+            Customer::create([
+                'user_id' => $user->id,
+                'photo' => $request->photo,
+                'profession'  => $request->profession,
+                'description'  => $request->description,
+            ]);
             $user->assignRole('teacher');
             return $this->returnSuccessMessage('created successfully');
         }
