@@ -16,11 +16,13 @@ class UserIndexResource extends JsonResource
     {
 
         return [
-            'id' =>$this->id,
+            'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
             'wallet' => $this->wallet
 
+
         ];
     }
+   
 }

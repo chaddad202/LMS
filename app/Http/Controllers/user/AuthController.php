@@ -105,6 +105,6 @@ class AuthController extends Controller
     public function index()
     {
         $user = User::all();
-        return new UserIndexResource($user);
+        return  UserIndexResource::collection($user);
     }
 }
