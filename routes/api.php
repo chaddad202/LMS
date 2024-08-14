@@ -160,4 +160,4 @@ Route::get('/category_explore', [FilterControler::class, 'category_explore']);
 Route::get('/review_explore', [FilterControler::class, 'review_explore']);
 Route::get('/profile_show/{id}', [CustomerController::class, 'show']);
 Route::get('/user_show/{id}', [AuthController::class, 'show']);
-Route::get('/user_index/{id}', [AuthController::class, 'index']);
+Route::get('/user_index', [AuthController::class, 'index']);
