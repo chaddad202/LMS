@@ -48,7 +48,10 @@ class AuthController extends Controller
         $user = User::create($data);;
         $user->assignRole('student');
         $token = $user->createToken('myapptoken')->plainTextToken;
-        $user->update(['remember_token' => $token]);
+        $user->update([
+            'remember_token' => $token,
+            'wallet' => 0
+        ]);
 
         return $this->returnData('register successfully', 200, $token);
     }
@@ -104,7 +107,16 @@ class AuthController extends Controller
     }
     public function index()
     {
-        $user = User::all();
-        return  UserIndexResource::collection($user);
+        $users = User::whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'admin');
+        })->get();
+        return  UserIndexResource::collection($users);
+    }
+    public function destroy($id)
+    {
+        $user = User::find($id);
+        $user->delete();
+
+        return $this->returnSuccessMessage('deleted successfully');
     }
 }
