@@ -125,7 +125,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/review_update/{review_id}', [ReviewController::class, 'update']);
     Route::delete('/review_destroy/{review_id}', [ReviewController::class, 'destroy']);
     Route::get('/q_a_index/{lesson_id}', [Q_aController::class, 'index']);
-    Route::get('/my_profile_show/{id}', [CustomerController::class, 'my_profile']);
+    Route::get('/my_profile_show', [CustomerController::class, 'my_profile']);
 });
 
 Route::get('/Quiz_show/{id}', [QuizController::class, 'show']);
