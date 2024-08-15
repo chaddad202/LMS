@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use Illuminate\Support\Facades\Storage;
 class ProfileCustomerResource extends JsonResource
 {
     /**
@@ -19,9 +19,10 @@ class ProfileCustomerResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'createdAt' => $this->created_at,
-            'photo' => asset('storage/' . str_replace('public/', '', $this->customer->photo)),
+            'photo' => Storage::url($this->customer->photo),
             'profession' => $this->customer->profession,
             'description' => $this->customer->description,
+            'wallet' => $this->wallet
         ];
     }
 }
