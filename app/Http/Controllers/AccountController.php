@@ -6,6 +6,7 @@ use App\Http\Requests\AccountDeleteRequest;
 use App\Http\Requests\EmailUpdateRequest;
 use App\Http\Requests\PasswordUpdateRequest;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Traits\GeneralTrait;
@@ -66,6 +67,13 @@ class AccountController extends Controller
             return $this->returnSuccessMessage('created successfully');
         }
         $customer->update($request->all());
+        return $this->returnSuccessMessage('updated successfully');
+    }
+    public function user_update(UserUpdateRequest $request, $id)
+    {
+        $user = User::find($id);
+        $amount = $user->wallet + $request->wallet;
+        $user->update(['wallet' => $amount]);
         return $this->returnSuccessMessage('updated successfully');
     }
 }
