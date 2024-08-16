@@ -29,7 +29,7 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         $query = Course::query();
-$user =auth()->user()->id;
+        $user = auth()->user()->id;
 
         if ($request->has('category')) {
             $query->where('category_id', $request->input('category'));
@@ -51,7 +51,7 @@ $user =auth()->user()->id;
             if ($price === 'free') {
                 $query->where(function ($q) {
                     $q->where('price', 0)
-                    ->orWhereNull('price');
+                        ->orWhereNull('price');
                 });
             } elseif ($price === 'paid') {
                 $query->where('price', '>', 0);
@@ -78,20 +78,23 @@ $user =auth()->user()->id;
     public function store(CourseRequest $request)
     {
         $user = auth()->user()->id;
-        $coupon = Coupon::findOrFail($request->coupon_id);
-        if ($user != $coupon->user_id) {
-            return response(['message' => 'not authountcated'], 401);
-        }
-        $data = [
+
+    $data = [
             'title' => $request->title,
             'description' => $request->description,
             'photo' => $request->photo,
             'price'  => $request->price,
             'level' => $request->level,
             'category_id' => $request->category_id,
-            'coupon_id' => $request->coupon_id,
             'type' => 'draft'
         ];
+        if ($request->has('coupon_id')) {
+            $coupon = Coupon::findOrFail($request->coupon_id);
+            if ($user != $coupon->user_id) {
+                return response(['message' => 'not authountcated'], 401);
+            }
+            $data['coupon_id'] = $request->coupon_id;
+        }
         $data['user_id'] = $user;
         $photo  = '';
         if ($request->hasFile('photo')) {
