@@ -85,7 +85,7 @@ class AccountController extends Controller
         $user->update(['wallet' => $amount]);
         return $this->returnSuccessMessage('updated successfully');
     }
-    public function my_courses()
+    public function my_courses_enrollnemt()
     {
         $user = User::findOrFail(auth()->user()->id);
         if (!$user) {

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\course\CourseIndexResource;
 use App\Http\Resources\course\CourseShowResource;
 use App\Http\Resources\FilteringResource;
+use App\Http\Resources\MyCoursesResource;
 use App\Http\Resources\ShowEnrollmentResoursce;
 use App\Models\Coupon;
 use App\Models\Information;
@@ -193,5 +194,10 @@ class CourseController extends Controller
         } else {
             return response(['message' => 'not found'], 404);
         }
+    }
+    public function my_courses(){
+        $user=User::find(auth()->user()->id);
+        $courses=$user->courses;
+        return MyCoursesResource::collection($courses);
     }
 }

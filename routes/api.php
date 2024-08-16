@@ -53,6 +53,7 @@ Route::post('/register_Student', [AuthController::class, 'register_Student']);
 
 Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function () {
     Route::get('/profile_destroy/{id}', [CustomerController::class, 'destroy']);
+    Route::get('/my_courses', [CourseController::class, 'my_courses']);
     Route::post('/course_store', [CourseController::class, 'store']);
     Route::post('/course_update/{id}', [CourseController::class, 'update']);
     Route::delete('/course_destroy/{id}', [CourseController::class, 'destroy']);
@@ -81,6 +82,7 @@ Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function ()
     Route::post('/coupon_store', [CouponController::class, 'store']);
     Route::post('/coupon_update/{id}', [CouponController::class, 'update']);
     Route::delete('/coupon_destroy/{id}', [CouponController::class, 'destroy']);
+
 });
 Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function () {
     Route::post('/enrollment_store/{course_id}', [EnrollmentController::class, 'store']);
@@ -129,11 +131,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/review_destroy/{review_id}', [ReviewController::class, 'destroy']);
     Route::get('/q_a_index/{lesson_id}', [Q_aController::class, 'index']);
     Route::get('/my_profile_show', [CustomerController::class, 'my_profile']);
-    Route::get('/my_courses', [AccountController::class, 'my_courses']);
     Route::post('/email_update', [AccountController::class, 'email_update']);
     Route::post('/password_update', [AccountController::class, 'password_update']);
     Route::delete('/account_delete', [AccountController::class, 'account_delete']);
     Route::post('/profile_update', [AccountController::class, 'profile_update']);
+    Route::get('/my_courses_enrollnemt', [AccountController::class, 'my_courses_enrollnemt']);
 });
 
 Route::get('/Quiz_show/{id}', [QuizController::class, 'show']);

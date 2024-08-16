@@ -24,7 +24,7 @@ class CourseRequest extends FormRequest
     {
         return [
 
-            'category_id' => 'exists:categories,id',
+            'category_id' => 'required|exists:categories,id',
             'coupon_id' => 'exists:coupons,id',
             'title' => 'required|string',
             'level' => 'required|in:beginner,intemediate,advanced',
