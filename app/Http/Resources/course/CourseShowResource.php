@@ -21,12 +21,15 @@ class CourseShowResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'=>$this->id,
-            'name_of_teacher' => $this->user->name,
-            'photo_of_teacher' => asset('storage/' . str_replace('public/', '', $this->user->customer->photo)),
+            'id' => $this->id,
+            'teacher' => [
+                'idTeacher' => $this->user->id,
+                'nameTeacher' => $this->user->name,
+                'photoTeacher' => asset('storage/' . str_replace('public/', '', $this->user->customer->photo)),
+            ],
             'title' => $this->title,
             'description' => $this->description,
-            'photo'  =>asset('storage/' . str_replace('public/', '', $this->photo)),
+            'photo'  => asset('storage/' . str_replace('public/', '', $this->photo)),
             'price' => $this->price,
             'course_duration' => $this->course_duration,
             'level' => $this->level,
@@ -35,12 +38,12 @@ class CourseShowResource extends JsonResource
             'updated_at' => $this->updated_at,
             'skils' => $this->getskill(),
             'what you will learn' => $this->getgain(),
-             'category' => [
+            'category' => [
 
                 'id' => $this->category->id,
 
                 'name' => $this->category->name,
-             ],
+            ],
             'num_of_enrollment' => $this->getnumenro(),
             'course_related' => $this->getcourse_related(),
             'rating' => $this->getrate(),
@@ -70,6 +73,7 @@ class CourseShowResource extends JsonResource
         $res = [];
         foreach ($this->Gain_prequists as $Gain_prequist) {
             $res[] = [
+                'id' => $Gain_prequist->id,
                 'status' => $Gain_prequist->status,
                 'text' => $Gain_prequist->text
             ];
@@ -86,6 +90,7 @@ class CourseShowResource extends JsonResource
             $point = $courseskill->point;
             $status = $courseskill->status;
             $res[] = [
+                'id' => $skill->id,
                 'title' => $title,
                 'point' => $point,
                 'status' => $status
@@ -119,13 +124,13 @@ class CourseShowResource extends JsonResource
     public function getreview()
     {
         $res = [];
-        foreach ($this->reviews
-            as $review) {
+        foreach ($this->reviews as $review) {
             $user = User::find($review->user_id);
             $res[] = [
+                'id' => $review->id,
                 'user_name' => $user->name,
-                'created_at' => $this->created_at,
-                'comment' => $this->comment
+                'created_at' => $review->created_at,
+                'comment' => $review->comment
 
             ];
         }
@@ -136,14 +141,16 @@ class CourseShowResource extends JsonResource
         $res = [];
         foreach ($this->sections as $section) {
             $res[] = [
+                'id' => $section->id,
                 'title'  => $section->title,
                 'section_duration' => $section->section_duration,
                 'lesson' => [
+                    'id'
+                    => $section->lessons->pluck('id'),
                     'title' => $section->lessons->pluck('title'),
                     'lesson_duration' => $section->lessons->pluck('lesson_duration')
                 ]
             ];
-
         }
         return $res;
     }
