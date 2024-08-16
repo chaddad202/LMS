@@ -21,6 +21,7 @@ class CourseShowResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id'=>$this->id,
             'name_of_teacher' => $this->user->name,
             'photo_of_teacher' => asset('storage/' . str_replace('public/', '', $this->user->customer->photo)),
             'title' => $this->title,
@@ -29,19 +30,39 @@ class CourseShowResource extends JsonResource
             'price' => $this->price,
             'course_duration' => $this->course_duration,
             'level' => $this->level,
+            'courseDuration' => $this->getcourseDuration(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'skils' => $this->getskill(),
             'what you will learn' => $this->getgain(),
-            'categories_name' => $this->category->name,
+             'category' => [
+
+                'id' => $this->category->id,
+
+                'name' => $this->category->name,
+             ],
             'num_of_enrollment' => $this->getnumenro(),
             'course_related' => $this->getcourse_related(),
-            'average_rating' => $this->getAverageRating(),
+            'rating' => $this->getrate(),
             'review' => $this->getreview(),
             'section_and_lesson' => $this->getsection()
 
 
         ];
+    }
+    public function getcourseDuration()
+    {
+        if ($this->course_duration == NULL) {
+            return 0;
+        }
+        return $this->course_duration;
+    }
+    public function getrate()
+    {
+        if ($this->rating == NULL) {
+            return 0;
+        }
+        return $this->average_rating;
     }
     public function getgain()
     {
