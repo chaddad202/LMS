@@ -24,6 +24,7 @@ class MyCoursesResource extends JsonResource
             'instructors' => $this->user->name,
             'Course_Duration' => $this->course_duration,
             'type'=>$this->type,
+            'categoryId'=>$this->category->id,
             'category'=>$this->category->name
         ];
     }

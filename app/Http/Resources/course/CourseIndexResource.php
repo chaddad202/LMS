@@ -25,7 +25,9 @@ class CourseIndexResource extends JsonResource
             'level' => $this->level,
             'instructors' => $this->user->name,
             'Course_Duration' => $this->course_duration,
-            'isFavourte' => $this->isFavourite()
+            'isFavourte' => $this->isFavourite(),
+            'categoryId' => $this->category->id,
+            'category' => $this->category->name
         ];
     }
     public function isFavourite()

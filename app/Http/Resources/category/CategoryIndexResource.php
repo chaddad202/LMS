@@ -4,6 +4,7 @@ namespace App\Http\Resources\category;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\Course;
 
 class CategoryIndexResource extends JsonResource
 {
@@ -26,7 +27,8 @@ class CategoryIndexResource extends JsonResource
     public function getavailble()
     {
         $r = 0;
-        foreach ($this->courses as $course) {
+        $courses = Course::where('category_id', $this->id)->where('type', 'publish')->get();
+        foreach ($courses as $course) {
             $r++;
         }
         return $r;

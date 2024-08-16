@@ -59,6 +59,9 @@ class CourseController extends Controller
             }
         }
 
+        $query->where('user_id', '!=', $user);
+
+
         $courses = $query->get();
 
 
@@ -80,7 +83,7 @@ class CourseController extends Controller
     {
         $user = auth()->user()->id;
 
-    $data = [
+        $data = [
             'title' => $request->title,
             'description' => $request->description,
             'photo' => $request->photo,
@@ -147,6 +150,7 @@ class CourseController extends Controller
         if ($request->all() === null || count($request->all()) === 0) {
             return response(['message' => 'request is empty'], 403);
         }
+       
         $user = auth()->user()->id;
         $user_auth = User::find($user);
         if ($user == $course->user_id || $user_auth->hasRole('admin')) {
@@ -195,9 +199,10 @@ class CourseController extends Controller
             return response(['message' => 'not found'], 404);
         }
     }
-    public function my_courses(){
-        $user=User::find(auth()->user()->id);
-        $courses=$user->courses;
+    public function my_courses()
+    {
+        $user = User::find(auth()->user()->id);
+        $courses = $user->courses;
         return MyCoursesResource::collection($courses);
     }
 }
