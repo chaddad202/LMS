@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 use App\Traits\GeneralTrait;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Storage;
 class AccountController extends Controller
 {
     use GeneralTrait;
@@ -78,6 +78,7 @@ class AccountController extends Controller
         $customer->update($request->all());
         if($request->has('photo')){
             $photo =  $request->file('photo')->store('public/images');
+            Storage::delete($customer->photo);
             $customer->update(['photo' => $photo,
         ]);
         }
