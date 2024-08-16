@@ -76,6 +76,11 @@ class AccountController extends Controller
             return $this->returnSuccessMessage('created successfully');
         }
         $customer->update($request->all());
+        if($request->has('photo')){
+            $photo =  $request->file('photo')->store('public/images');
+            $customer->update(['photo' => $photo,
+        ]);
+        }
         return $this->returnSuccessMessage('updated successfully');
     }
     public function user_update(UserUpdateRequest $request, $id)
