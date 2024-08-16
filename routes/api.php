@@ -138,7 +138,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 Route::get('/Quiz_show/{id}', [QuizController::class, 'show']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/category_index', [CategoryController::class, 'index']);
-Route::post('/course_index', [CourseController::class, 'index']);
+Route::get('/course_index', [CourseController::class, 'index']);
 Route::get('/course_show/{id}', [CourseController::class, 'show']);
 Route::post('/course_search', [CourseController::class, 'search']);
 Route::get('/teacher_courses/{user_id}', [CourseController::class, 'teacher_courses']);
