@@ -129,10 +129,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/review_destroy/{review_id}', [ReviewController::class, 'destroy']);
     Route::get('/q_a_index/{lesson_id}', [Q_aController::class, 'index']);
     Route::get('/my_profile_show', [CustomerController::class, 'my_profile']);
-    Route::post('email_update',[AccountController::class, 'email_update']);
-    Route::post('password_update',[AccountController::class, 'password_update']);
-    Route::delete('account_delete',[AccountController::class, 'account_delete']);
-    Route::post('profile_update',[AccountController::class, 'profile_update']);
+    Route::post('/email_update',[AccountController::class, 'email_update']);
+    Route::post('/password_update',[AccountController::class, 'password_update']);
+    Route::delete('/account_delete',[AccountController::class, 'account_delete']);
+    Route::post('/profile_update',[AccountController::class, 'profile_update']);
 });
 
 Route::get('/Quiz_show/{id}', [QuizController::class, 'show']);

@@ -32,26 +32,31 @@ class AccountController extends Controller
     public function password_update(PasswordUpdateRequest $request)
     {
         $user = User::findOrFail(auth()->user()->id);
-        if (!Hash::check($request->password, $user->password)) {
+        if (!Hash::check($request->old_password, $user->password)) {
             return response(['message' => 'Bad Creds'], 401);
         }
         $user->update([
-            'password' => $request->new_password
+            'password' => Hash::make(
+                $request->new_password
+            )
         ]);
         return $this->returnSuccessMessage('updated successfully');
     }
-    public function account_delete(AccountDeleteRequest $request)
+    public function account_delete()
     {
         $user = User::findOrFail(auth()->user()->id);
-        if (!Hash::check($request->password, $user->password)) {
-            return response(['message' => 'Bad Creds'], 401);
-        }
         $user->delete();
         return $this->returnSuccessMessage('deleted successfully');
     }
     public function profile_update(ProfileUpdateRequest $request)
     {
+
         $user = User::findOrFail(auth()->user()->id);
+        if ($request->has('name')) {
+            $user->update([
+                'name' => $request->name
+            ]);
+        }
         $customer = $user->customer;
         if (! $customer) {
             if (!($request->has('photo') & $request->has('profession') & $request->has('description'))) {

@@ -23,7 +23,7 @@ class TeacherRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'photo' => 'required|file',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'profession' => 'required|string',
             'description' => 'required|string'
         ];
