@@ -15,7 +15,6 @@ use App\Http\Resources\UserIndexResource;
 use App\Http\Resources\UserShowResource;
 use App\Models\Customer;
 use App\Models\role_user;
-use Illuminate\Support\Facades\URL;
 
 class AuthController extends Controller
 {
@@ -30,13 +29,10 @@ class AuthController extends Controller
             return $this->returnError(403, 'you have already created profile');
         }
         $user->assignRole('teacher');
-        $imagName = time() . '.' . $request->photo->extension();
-        $request->photo->move(public_path('images/'),$imagName);
-        $imarurl=URL::asset('images/'.$imagName);
-
+        $photo =  $request->file('photo')->store('public/images');
         Customer::create([
             'user_id' => $user_id,
-            'photo' => $imarurl,
+            'photo' => $photo,
             'profession' => $request->profession,
             'description' => $request->description
         ]);
@@ -126,7 +122,7 @@ class AuthController extends Controller
             $user->delete();
 
 
-            return $this->returnSuccessMessage('deleted successfully');
-        }
+        return $this->returnSuccessMessage('deleted successfully');
     }
+}
 }

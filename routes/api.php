@@ -113,10 +113,10 @@ Route::group(['middleware' => ['checkAdminRole', 'auth:sanctum']], function () {
     Route::get('/order_show/{order_id}', [OrderController::class, 'show']);
     Route::get('/order_submit/{order_id}', [OrderController::class, 'submit']);
     Route::post('/user_update/{id}', [AccountController::class, 'user_update']);
-
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/course_index', [CourseController::class, 'index']);
     Route::post('/register_Teacher', [AuthController::class, 'register_Teacher']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/q_a_store/{id}', [Q_aController::class, 'store']);
@@ -129,16 +129,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/review_destroy/{review_id}', [ReviewController::class, 'destroy']);
     Route::get('/q_a_index/{lesson_id}', [Q_aController::class, 'index']);
     Route::get('/my_profile_show', [CustomerController::class, 'my_profile']);
-    Route::post('/email_update',[AccountController::class, 'email_update']);
-    Route::post('/password_update',[AccountController::class, 'password_update']);
-    Route::delete('/account_delete',[AccountController::class, 'account_delete']);
-    Route::post('/profile_update',[AccountController::class, 'profile_update']);
+    Route::post('/email_update', [AccountController::class, 'email_update']);
+    Route::post('/password_update', [AccountController::class, 'password_update']);
+    Route::delete('/account_delete', [AccountController::class, 'account_delete']);
+    Route::post('/profile_update', [AccountController::class, 'profile_update']);
 });
 
 Route::get('/Quiz_show/{id}', [QuizController::class, 'show']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/category_index', [CategoryController::class, 'index']);
-Route::get('/course_index', [CourseController::class, 'index']);
 Route::get('/course_show/{id}', [CourseController::class, 'show']);
 Route::post('/course_search', [CourseController::class, 'search']);
 Route::get('/teacher_courses/{user_id}', [CourseController::class, 'teacher_courses']);

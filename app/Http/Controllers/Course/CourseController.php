@@ -29,6 +29,7 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         $query = Course::query();
+$user =auth()->user()->id;
 
         if ($request->has('category')) {
             $query->where('category_id', $request->input('category'));

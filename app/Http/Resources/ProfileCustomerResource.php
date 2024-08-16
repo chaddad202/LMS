@@ -19,7 +19,7 @@ class ProfileCustomerResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'createdAt' => $this->created_at,
-            'photo' => $this->customer->photo,
+            'photo' => Storage::url($this->customer->photo),
             'profession' => $this->customer->profession,
             'description' => $this->customer->description,
             'wallet' => $this->wallet

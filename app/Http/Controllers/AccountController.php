@@ -13,7 +13,6 @@ use App\Traits\GeneralTrait;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-
 class AccountController extends Controller
 {
     use GeneralTrait;
@@ -62,9 +61,12 @@ class AccountController extends Controller
             if (!($request->has('photo') & $request->has('profession') & $request->has('description'))) {
                 return response(['message' => 'please isert all information'], 401);
             }
+            $photo =  $request->file('photo')->store('public/images');
+
+
             Customer::create([
                 'user_id' => $user->id,
-                'photo' => $request->photo,
+                'photo' => $photo,
                 'profession'  => $request->profession,
                 'description'  => $request->description,
             ]);
