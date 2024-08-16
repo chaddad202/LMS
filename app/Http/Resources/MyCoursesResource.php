@@ -18,14 +18,33 @@ class MyCoursesResource extends JsonResource
             'id' => $this->id,
             'photo'  => asset('storage/' . str_replace('public/', '', $this->photo)),
             'title' => $this->title,
-            'rating' => $this->rating,
+            'rating' => $this->getrate(),
             'price' => $this->price,
             'level' => $this->level,
             'instructors' => $this->user->name,
-            'Course_Duration' => $this->course_duration,
-            'type'=>$this->type,
-            'categoryId'=>$this->category->id,
-            'category'=>$this->category->name
+            'courseDuration' => $this->getcourseDuration(),
+            'type' => $this->type,
+            'categoryId' => $this->category->id,
+            'category' => [
+
+                'id' => $this->category->id,
+
+                'name' => $this->category->name,
+            ]
         ];
+    }
+    public function getcourseDuration()
+    {
+        if ($this->course_duration == NULL) {
+            return 0;
+        }
+        return $this->course_duration;
+    }
+    public function getrate()
+    {
+        if ($this->rating == NULL) {
+            return 0;
+        }
+        return $this->average_rating;
     }
 }
