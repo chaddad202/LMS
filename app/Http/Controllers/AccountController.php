@@ -7,6 +7,8 @@ use App\Http\Requests\EmailUpdateRequest;
 use App\Http\Requests\PasswordUpdateRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\course\CourseIndexResource;
+use App\Models\Course;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Traits\GeneralTrait;
@@ -82,5 +84,23 @@ class AccountController extends Controller
         $amount = $user->wallet + $request->wallet;
         $user->update(['wallet' => $amount]);
         return $this->returnSuccessMessage('updated successfully');
+    }
+    public function my_courses()
+    {
+        $user = User::findOrFail(auth()->user()->id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        $enrollment = $user->enrollments;
+        if ($enrollment->isEmpty()) {
+            return response()->json(['courses' => []], 200);
+        }
+$course=[];
+        $courseIds = $enrollment->pluck('course_id');
+        foreach($courseIds as $couse_id){
+            $c= Course::find($couse_id);
+            $course[]=$c;
+        }
+        return CourseIndexResource::collection($course);
     }
 }
