@@ -46,6 +46,7 @@ class CourseShowResource extends JsonResource
             'rating' => $this->getrate(),
             'review' => $this->getreview(),
             'section_and_lesson' => $this->getsection()
+            'type' => $this->type,
 
 
         ];
