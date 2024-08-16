@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FavouriteRequest;
 use App\Http\Resources\FavouriteIndexResource;
 use App\Models\Enrollment;
 use App\Models\Favorite;
@@ -36,9 +37,10 @@ class FavoriteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store($course_id)
+    public function store( FavouriteRequest $request)
     {
 
+        $course_id = $request->course_id;
         $user_id  =  auth()->user()->id;
         $enroll = Enrollment::where('user_id', $user_id)->where('course_id', $course_id)->first();
         if (!$enroll) {
@@ -63,8 +65,6 @@ class FavoriteController extends Controller
         $user = auth()->user()->id;
         $favourite = Favorite::findOrFail($id);
         return new FavouriteIndexResource($favourite);
-
-
     }
 
     /**

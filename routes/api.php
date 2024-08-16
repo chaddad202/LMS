@@ -86,7 +86,7 @@ Route::group(['middleware' => ['checkTeacherRole', 'auth:sanctum']], function ()
 });
 Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function () {
     Route::post('/enrollment_store/{course_id}', [EnrollmentController::class, 'store']);
-    Route::get('/favorite_store/{course_id}', [FavoriteController::class, 'store']);
+    Route::post('/favorite_store', [FavoriteController::class, 'store']);
     Route::get('/favorite_index', [FavoriteController::class, 'index']);
     Route::get('/favorite_show/{id}', [FavoriteController::class, 'show']);
     Route::delete('/favorite_destroy/{id}', [FavoriteController::class, 'destroy']);

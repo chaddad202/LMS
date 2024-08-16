@@ -14,12 +14,17 @@ class MyCoursesResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [ 'photo'  => asset('storage/' . str_replace('public/', '', $this->photo)),
+        return [
+            'id' => $this->id,
+            'photo'  => asset('storage/' . str_replace('public/', '', $this->photo)),
             'title' => $this->title,
             'rating' => $this->rating,
             'price' => $this->price,
             'level' => $this->level,
             'instructors' => $this->user->name,
-            'Course_Duration' => $this->course_duration,];
+            'Course_Duration' => $this->course_duration,
+            'type'=>$this->type,
+            'category'=>$this->category->name
+        ];
     }
 }

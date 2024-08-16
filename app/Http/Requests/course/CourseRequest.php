@@ -30,7 +30,7 @@ class CourseRequest extends FormRequest
             'level' => 'required|in:beginner,intemediate,advanced',
             'description' => 'required|string',
             'photo' => 'required|file',
-            'price'  => 'Integer',
+            'price'  => 'required|Integer',
             'course_duration' => 'timezone',
 
         ];
