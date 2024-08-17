@@ -49,7 +49,6 @@ class SectionController extends Controller
             Section::create([
                 'title' => $request->title,
                 'course_id' => $course_id,
-                'section_duration' => $request->section_duration
             ]);
             return $this->returnSuccessMessage('created successfully');
         }
