@@ -20,7 +20,8 @@ class Course extends Model
         'price',
         'course_duration',
         'category_id',
-        'coupon_id'
+        'coupon_id',
+        'type'
 
     ];
 
