@@ -91,7 +91,7 @@ Route::group(['middleware' => ['checkStudentRole', 'auth:sanctum']], function ()
     Route::get('/favorite_show/{id}', [FavoriteController::class, 'show']);
     Route::delete('/favorite_destroy/{id}', [FavoriteController::class, 'destroy']);
     Route::post('/answer_store/{quiz_id}', [AnswerController::class, 'store']);
-    Route::post('/my_mark_show', [AnswerController::class, 'my_mark']);
+    Route::get('/my_mark_show/{quiz_id}', [AnswerController::class, 'my_mark']);
     Route::post('/rate_store/{course_id}', [RateController::class, 'store']);
     Route::post('/rate_update/{rate_id}', [RateController::class, 'update']);
     Route::delete('/rate_destroy/{rate_id}', [RateController::class, 'destroy']);

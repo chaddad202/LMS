@@ -39,9 +39,10 @@ class AnswerController extends Controller
      */
     public function store(AnswerRequest $request, $quiz_id)
     {
-        $quiz = Quiz::find($quiz_id);
         $user = auth()->user()->id;
-        $submissionCount = Answer::where('user_id', $user->id)
+
+        // Check the submission count
+        $submissionCount = Answer::where('user_id', $user)
             ->where('quiz_id', $quiz_id)
             ->distinct('created_at')
             ->count('created_at');
@@ -51,81 +52,104 @@ class AnswerController extends Controller
             return $this->returnErrorMessage('You have already submitted answers for this quiz three times.');
         }
 
+        // Iterate through the questions
         foreach ($request->question as $questionData) {
             $score = 0;
             $question = Question::find($questionData['id']);
-            $choice = Choice::find($questionData['choices']['id']);
-            if ($choice->isAnswer == true) {
-                $score = $question->mark;
+
+            // Iterate through the choices
+            foreach ($questionData['choices'] as $choiceData) {
+                $choice = Choice::find($choiceData['id']);
+
+                // Check if the choice is the correct answer
+                if ($choice->isAnswer == true) {
+                    $score = $question->mark;
+                }
+
+                // Create the answer record
+                Answer::create([
+                    'user_id' => $user,  // Removed the extra space here
+                    'quiz_id' => $quiz_id,
+                    'question_id' => $question->id,
+                    'choice_id' => $choice->id,
+                    'score' => $score,
+                ]);
             }
-            Answer::create([
-                'user_id ' => auth()->user()->id,
-                'quiz_id' => $quiz_id,
-                'question_id' => $question->id,
-                'choice_id' => $choice->id,
-                'score' => $score,
-            ]);
         }
-        return $this->returnSuccessMessage('created successfuly');
+
+        return $this->returnSuccessMessage('Created successfully');
     }
 
-    public function my_mark(Request $request)
+
+    public function my_mark($quiz_id)
     {
-        // $request->validate(['quiz_id' => 'required|Integer|exists:quizzes,id',]);
-        // $user = auth()->user()->id;
-        // $mark = 0;
+        $user = auth()->user()->id;
 
-        // $quiz = Quiz::find($request->quiz_id);
-        // $questions = $quiz->questions;
+        // Get the latest submission
+        $latestSubmission = Answer::where('user_id', $user)
+            ->where('quiz_id', $quiz_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
 
-        // $q_q = Q_Q::where('quiz_id', $request->quiz_id)
-        //     ->whereIn('question_id', $questions->pluck('id'))
-        //     ->get()
-        //     ->keyBy('question_id');
+        // If no submission is found, return an error message
+        if (!$latestSubmission) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No submission found.'
+            ], 404);
+        }
 
-        // $getanswer = Answer::where('user_id', $user)
-        //     ->where('quiz_id', $request->quiz_id)
-        //     ->whereIn('question_id', $questions->pluck('id'))
-        //     ->get();
+        // Get the answers from the latest submission
+        $answers = Answer::where('user_id', $user)
+            ->where('quiz_id', $quiz_id)
+            ->where('created_at', $latestSubmission->created_at)
+            ->get();
+        $quiz = Quiz::findOrFail($quiz_id);
+        $mark_final =   $quiz->questions->pluck('mark')->sum();
+        // Calculate the user's score
+        $mark = 0;
+        foreach ($answers as $answer) {
+            $mark += $answer->score;
+        }
 
-        // $answers = $getanswer->pluck('choice_id', 'question_id');
+        // Return success message with the result
+        if ($mark >= $mark_final) {
+            return response()->json([
+                'status' => 'success',
+                'message' => "You passed the exam with a mark of $mark."
+            ], 200);
+        }
 
-        // $q_c = Q_C::whereIn('question_id', $questions->pluck('id'))
-        //     ->where('status', 'true')
-        //     ->get()
-        //     ->pluck('choice_id', 'question_id');
-
-        // foreach ($answers as $question_id => $choice_id) {
-        //     if (isset($q_c[$question_id]) && $q_c[$question_id] == $choice_id) {
-        //         $mark += $q_q[$question_id]->mark;
-        //     }
-        // }
-
-        // Mark::create([
-        //     'quiz_id' => $request->quiz_id,
-        //     'user_id' => $user,
-        //     'mark' => $mark
-        // ]);
-
-        // return response([
-        //     'Data' => "your mark $mark",
-        // ], 200);
-
-
-
-        // Mark::create([
-        //     'quiz_id' => $request->quiz_id,
-        //     'user_id' => $user,
-        //     'mark' =>  $mark
-        // ]);
-        // return response([
-        //     'Data' => "your mark $mark",
-        // ], 200);
+        // If the mark is below the passing score
+        return response()->json([
+            'status' => 'success',
+            'message' => "Unfortunately, you failed with a mark of $mark."
+        ], 200);
     }
+
 
     /**
      * Display the specified resource.
      */
+    public function returnErrorMessage($message)
+    {
+        return response()->json([
+            'status' => 'error',
+            'message' => $message
+        ], 400); // You can adjust the status code if needed
+    }
+
+    // Helper method for success messages
+    public function returnSuccessMessage($message)
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => $message
+        ], 200); // Default status code 200 (OK)
+    }
+
+    // Other methods like store() and my_mark() go here
+
     public function show(string $id)
     {
         //
