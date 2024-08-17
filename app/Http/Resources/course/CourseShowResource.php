@@ -100,9 +100,10 @@ class CourseShowResource extends JsonResource
             $courseskill =   Course_skills::where('skills_id', $skill->id)->where('course_id', $this->id)->first();
             $point = $courseskill->point;
             $status = $courseskill->status;
+
             $res[] = [
-                'id' => $skill->id,
-                'title' => $title,
+                'id' => $courseskill->id,
+                'skill' => $s,
                 'point' => $point,
                 'status' => $status
             ];
