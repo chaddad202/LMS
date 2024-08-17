@@ -12,6 +12,7 @@ class Course_skills extends Model
     protected $fillable = [
         'skills_id',
         'course_id',
-        'point ','user_id','status'
+        'point',
+        'status'
     ];
 }
