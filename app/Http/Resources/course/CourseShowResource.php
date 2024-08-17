@@ -36,7 +36,7 @@ class CourseShowResource extends JsonResource
             'courseDuration' => $this->getcourseDuration(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'skils' => $this->getskill(),
+            'skills' => $this->getskill(),
             'goal' => $this->getgain(),
             'category' => [
 
