@@ -63,8 +63,6 @@ class LessonController extends Controller
                 'section_id' => $section_id,
                 'title' => $request->title,
                 'description' => $request->description,
-                'media' => $request->media,
-                'lesson_duration' => $request->lesson_duration
             ]);
             return $this->returnSuccessMessage('Created successfully');
         }
