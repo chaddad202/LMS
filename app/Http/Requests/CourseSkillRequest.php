@@ -22,8 +22,9 @@ class CourseSkillRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'skills_id'=>'required|exists:skills,id',
             'point' => 'required|integer',
-            'status' => 'required|en:will_get,required'
+            'status' => 'required|string'
         ];
     }
 }

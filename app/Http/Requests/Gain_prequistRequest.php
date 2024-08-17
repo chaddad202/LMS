@@ -23,7 +23,7 @@ class Gain_prequistRequest extends FormRequest
     {
         return [
             'text' => 'required|string',
-            'status' => 'required|en:gain,prequisites'
+            'status' => 'required|string'
         ];
     }
 }

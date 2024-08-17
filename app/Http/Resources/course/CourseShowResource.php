@@ -37,7 +37,7 @@ class CourseShowResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'skils' => $this->getskill(),
-            'what you will learn' => $this->getgain(),
+            'goal' => $this->getgain(),
             'category' => [
 
                 'id' => $this->category->id,
@@ -72,10 +72,21 @@ class CourseShowResource extends JsonResource
     {
         $res = [];
         foreach ($this->Gain_prequists as $Gain_prequist) {
+            if ($Gain_prequist->status== 'prequisites'){
+               $res[]=[
+                    'prequisites'=>[
+                        'id' => $Gain_prequist->id,
+                        'text' => $Gain_prequist->text
+
+                ]
+                ];
+            }
+
             $res[] = [
-                'id' => $Gain_prequist->id,
-                'status' => $Gain_prequist->status,
-                'text' => $Gain_prequist->text
+                'gain' => [
+                    'id' => $Gain_prequist->id,
+                    'text' => $Gain_prequist->text
+                ]
             ];
         }
         return $res;

@@ -39,8 +39,8 @@ class Course_skillsController extends Controller
             return response(['message' => 'not authountcated'], 401);
         }
         Course_skills::create([
-            'user_id' => $user_auth,
             'course_id' => $course_id,
+            'skills_id'=>$request->skills_id,
             'point' => $request->point,
             'status' => $request->status
         ]);

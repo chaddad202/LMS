@@ -12,7 +12,7 @@ class Gain_prequist extends Model
     use HasFactory;
     protected $fillable = [
         'course_id',
-        'text', 'status'
+        'text', 'status',
 
 
     ];

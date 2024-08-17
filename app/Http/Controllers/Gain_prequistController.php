@@ -7,9 +7,10 @@ use App\Http\Requests\Gain_prequistUpdateRequest;
 use App\Models\Course;
 use App\Models\Gain_prequist;
 use Illuminate\Http\Request;
-
+use App\Traits\GeneralTrait;
 class Gain_prequistController extends Controller
 {
+    use GeneralTrait;
     public function index()
     {
         //
@@ -34,7 +35,6 @@ class Gain_prequistController extends Controller
             return response(['message' => 'not authountcated'], 401);
         }
         Gain_prequist::create([
-            'user_id' => $user_auth,
             'course_id' => $course_id,
             'text' => $request->text,
             'status' => $request->status

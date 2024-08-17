@@ -23,7 +23,7 @@ class CourseSkillUpdateRequest extends FormRequest
     {
         return [
             'point' => 'integer',
-            'status' => 'en:will_get,required'
+            'status' => 'status'
         ];
     }
 }
